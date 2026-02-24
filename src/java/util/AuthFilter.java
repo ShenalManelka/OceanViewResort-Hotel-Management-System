@@ -32,7 +32,7 @@ public class AuthFilter implements Filter {
         String loginURI = httpRequest.getContextPath() + "/login.html";
         String loginServletURI = httpRequest.getContextPath() + "/admin/login";
 
-        boolean loggedIn = (session != null && session.getAttribute("admin") != null);
+        boolean loggedIn = (session != null && session.getAttribute("user") != null);
         boolean loginRequest = httpRequest.getRequestURI().equals(loginURI);
         boolean loginServletRequest = httpRequest.getRequestURI().equals(loginServletURI);
 

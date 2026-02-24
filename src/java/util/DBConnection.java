@@ -23,7 +23,7 @@ public class DBConnection {
         return instance;
     }
 
-    
+    // Get connection method
     public Connection getConnection() throws Exception {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
