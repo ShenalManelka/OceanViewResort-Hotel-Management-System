@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | Ocean View Resort</title>
+    <link rel="stylesheet" href="CSS/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <div class="sidebar glass" style="border-radius: 0; margin-right: 2px;">
+            <div class="brand" style="margin-bottom: 40px; text-align: center;">
+                <h2 style="color: var(--primary-color); font-size: 20px;">Ocean View</h2>
+            </div>
+            <nav style="display: flex; flex-direction: column; gap: 10px;">
+                <a href="#" class="nav-item active" onclick="showSection('overview')"><i class="fas fa-chart-line"></i>
+                    Overview</a>
+                <a href="#" class="nav-item" onclick="showSection('rooms')"><i class="fas fa-bed"></i> Rooms</a>
+                <a href="#" class="nav-item" onclick="showSection('bookings')"><i class="fas fa-calendar-check"></i>
+                    Bookings</a>
+                <a href="#" class="nav-item" style="margin-top: auto; color: var(--error);" onclick="handleLogout()"><i
+                        class="fas fa-sign-out-alt"></i> Logout</a>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px;">
+                <h1 id="page-title">Dashboard Overview</h1>
+                <div class="user-info" style="display: flex; align-items: center; gap: 15px;">
+                    <span id="admin-name" style="font-weight: 500;">Admin User</span>
+                    <div
+                        style="width: 40px; height: 40px; background: var(--primary-color); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white;">
+                        <i class="fas fa-user"></i>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Overview Section -->
+            <section id="overview-section">
+                <div class="stats-grid">
+                    <div class="stat-card glass">
+                        <span class="stat-label">Total Rooms</span>
+                        <span class="stat-value" id="total-rooms">0</span>
+                    </div>
+                    <div class="stat-card glass">
+                        <span class="stat-label">Active Bookings</span>
+                        <span class="stat-value" id="active-bookings">0</span>
+                    </div>
+                    <div class="stat-card glass">
+                        <span class="stat-label">Total Revenue</span>
+                        <span class="stat-value" id="total-revenue">$0.00</span>
+                    </div>
+                </div>
+                <div class="glass" style="padding: 30px;">
+                    <h3>Recent Activity</h3>
+                    <p style="color: var(--text-secondary);">Welcome back! Here's a summary of the latest resort
+                        operations.</p>
+                </div>
+            </section>
+
+            <!-- Rooms Section (Hidden by default) -->
+            <section id="rooms-section" style="display: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+                    <h3>Manage Rooms</h3>
+                    <button class="btn btn-primary" onclick="openRoomModal()"><i class="fas fa-plus"></i> Add
+                        Room</button>
+                </div>
+                <div class="glass" style="overflow-x: auto;">
+                    <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                        <thead>
+                            <tr style="border-bottom: 1px solid #ddd;">
+                                <th style="padding: 15px;">Room #</th>
+                                <th style="padding: 15px;">Type</th>
+                                <th style="padding: 15px;">Price</th>
+                                <th style="padding: 15px;">Status</th>
+                                <th style="padding: 15px;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="rooms-table-body">
+                            <!-- JS will populate this -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Bookings Section (Hidden by default) -->
+            <section id="bookings-section" style="display: none;">
+                <div style="margin-bottom: 25px;">
+                    <h3>Reservations</h3>
+                </div>
+                <div class="glass" style="overflow-x: auto;">
+                    <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                        <thead>
+                            <tr style="border-bottom: 1px solid #ddd;">
+                                <th style="padding: 15px;">Guest Name</th>
+                                <th style="padding: 15px;">Room</th>
+                                <th style="padding: 15px;">Check-in</th>
+                                <th style="padding: 15px;">Check-out</th>
+                                <th style="padding: 15px;">Status</th>
+                                <th style="padding: 15px;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bookings-table-body">
+                            <!-- JS will populate this -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Modals and JS -->
+    <script src="JS/management.js"></script>
+    <style>
+        .nav-item {
+            text-decoration: none;
+            color: var(--text-secondary);
+            padding: 12px 15px;
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.3s;
+        }
+
+        .nav-item:hover,
+        .nav-item.active {
+            background: rgba(67, 97, 238, 0.1);
+            color: var(--primary-color);
+        }
+
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-available {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .status-occupied {
+            background: #fff3e0;
+            color: #ef6c00;
+        }
+
+        .status-maintenance {
+            background: #ffebee;
+            color: #c62828;
+        }
+    </style>
+</body>
+
+</html>
