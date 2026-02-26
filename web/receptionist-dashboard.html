@@ -27,6 +27,11 @@
                     Payments</a>
                 <a href="#" class="nav-item" style="margin-top: auto; color: var(--error);" onclick="handleLogout()"><i
                         class="fas fa-sign-out-alt"></i> Logout</a>
+                <div class="currency-toggle glass"
+                    style="margin-top: 10px; padding: 10px; display: flex; justify-content: space-around; font-size: 12px;">
+                    <span id="toggle-USD" class="currency-btn active" onclick="setCurrency('USD')">USD ($)</span>
+                    <span id="toggle-LKR" class="currency-btn" onclick="setCurrency('LKR')">LKR (Rs)</span>
+                </div>
             </nav>
         </div>
 
@@ -182,21 +187,21 @@
                                                 id="bill-room-num"></span> Stay</td>
                                         <td id="bill-base-price"
                                             style="padding: 10px; text-align: right; border-bottom: 1px solid #eee;">
-                                            $0.00</td>
+                                            Rs. 0.00</td>
                                     </tr>
                                     <tr>
                                         <td style="padding: 10px; border-bottom: 1px solid #eee; color: #666;">Tax
                                             (Incl. 10%)</td>
                                         <td id="bill-tax"
                                             style="padding: 10px; text-align: right; border-bottom: 1px solid #eee; color: #666;">
-                                            $0.00</td>
+                                            Rs. 0.00</td>
                                     </tr>
                                     <tr id="discount-row" style="display: none;">
                                         <td style="padding: 10px; border-bottom: 1px solid #eee; color: var(--error);">
                                             Discount</td>
                                         <td id="bill-discount"
                                             style="padding: 10px; text-align: right; border-bottom: 1px solid #eee; color: var(--error);">
-                                            -$0.00</td>
+                                            -Rs. 0.00</td>
                                     </tr>
                                 </tbody>
                                 <tfoot>
@@ -205,7 +210,7 @@
                                         </td>
                                         <td id="bill-total"
                                             style="padding: 15px 10px; text-align: right; font-weight: 700; font-size: 20px; color: var(--primary-color);">
-                                            $0.00</td>
+                                            Rs. 0.00</td>
                                     </tr>
                                 </tfoot>
                             </table>
@@ -228,7 +233,7 @@
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label>Discount ($)</label>
+                                <label>Discount (Rs.)</label>
                                 <input type="number" id="billDiscountInput" class="form-input" value="0"
                                     oninput="recalculateBill()">
                             </div>
@@ -285,7 +290,7 @@
 
                 <div class="form-group" style="background: rgba(67, 97, 238, 0.05); padding: 15px; border-radius: 8px;">
                     <label style="color: var(--primary-color); font-weight: 600;">Total Amount</label>
-                    <div id="totalAmountDisplay" style="font-size: 20px; font-weight: 700;">$0.00</div>
+                    <div id="totalAmountDisplay" style="font-size: 20px; font-weight: 700;">Rs. 0.00</div>
                     <input type="hidden" name="totalPrice" id="totalPriceInput">
                 </div>
 

@@ -29,6 +29,11 @@
                     Reports</a>
                 <a href="#" class="nav-item" style="margin-top: auto; color: var(--error);" onclick="handleLogout()"><i
                         class="fas fa-sign-out-alt"></i> Logout</a>
+                <div class="currency-toggle glass"
+                    style="margin-top: 10px; padding: 10px; display: flex; justify-content: space-around; font-size: 12px;">
+                    <span id="toggle-USD" class="currency-btn active" onclick="setCurrency('USD')">USD ($)</span>
+                    <span id="toggle-LKR" class="currency-btn" onclick="setCurrency('LKR')">LKR (Rs)</span>
+                </div>
             </nav>
         </div>
 
@@ -198,7 +203,7 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label>Price</label>
+                    <label>Price (Rs.)</label>
                     <input type="number" name="price" step="0.01" class="form-input" required>
                 </div>
                 <div class="form-group">

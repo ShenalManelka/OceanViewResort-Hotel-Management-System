@@ -61,10 +61,41 @@ async function loadStats() {
         updateEl('available-rooms', data.availableRooms || 0);
         updateEl('occupied-rooms', data.occupiedRooms || 0);
         updateEl('maintenance-rooms', data.maintenanceRooms || 0);
-        updateEl('total-revenue', `$${(data.totalRevenue || 0).toLocaleString()}`);
+        updateEl('total-revenue', formatPrice(data.totalRevenue || 0));
     } catch (err) {
         console.error('Error loading stats:', err);
     }
+}
+
+function formatPrice(usdAmount) {
+    if (currentCurrency === 'LKR') {
+        const lkrAmount = usdAmount * EXCHANGE_RATE;
+        return `Rs ${lkrAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    }
+    return `$${usdAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+}
+
+function setCurrency(currency) {
+    currentCurrency = currency;
+    localStorage.setItem('currency', currency);
+    updateCurrencyUI();
+
+    // Reload data to reflect new currency
+    loadStats();
+    loadRooms();
+    loadBookings();
+    loadBills();
+    if (document.getElementById('reports-section').style.display === 'block') {
+        loadReports();
+    }
+}
+
+function updateCurrencyUI() {
+    document.querySelectorAll('.currency-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    const activeBtn = document.getElementById(`toggle-${currentCurrency}`);
+    if (activeBtn) activeBtn.classList.add('active');
 }
 
 async function loadRooms() {
@@ -80,7 +111,7 @@ async function loadRooms() {
             <tr style="border-bottom: 1px solid #eee;">
                 <td style="padding: 15px;">${room.roomNumber}</td>
                 <td style="padding: 15px;">${room.type}</td>
-                <td style="padding: 15px;">$${room.price}</td>
+                <td style="padding: 15px;">${formatPrice(room.price)}</td>
                 <td style="padding: 15px;">
                     <span class="status-badge status-${room.status.toLowerCase()}">${room.status}</span>
                 </td>
@@ -263,7 +294,7 @@ async function loadReports() {
         // Best Month
         if (revenueData.length > 0) {
             const best = [...revenueData].sort((a, b) => b.revenue - a.revenue)[0];
-            document.getElementById('best-month').innerText = `${best.month} ($${best.revenue.toLocaleString()})`;
+            document.getElementById('best-month').innerText = `${best.month} (${formatPrice(best.revenue)})`;
         }
     } catch (err) {
         console.error('Error loading reports:', err);
@@ -283,9 +314,10 @@ function renderRevenueChart(data) {
 
     container.innerHTML = data.map(d => {
         const height = (d.revenue / maxRev) * 150; // Max height 150px
+        const dispRev = d.revenue > 1000 ? (d.revenue / 1000).toFixed(1) + 'k' : d.revenue;
         return `
             <div style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 10px;">
-                <div style="font-size: 10px; color: var(--primary-color); font-weight: 600;">$${d.revenue > 1000 ? (d.revenue / 1000).toFixed(1) + 'k' : d.revenue}</div>
+                <div style="font-size: 10px; color: var(--primary-color); font-weight: 600;">Rs. ${dispRev}k</div>
                 <div style="width: 100%; background: var(--primary-color); height: ${height}px; border-radius: 4px 4px 0 0; min-height: 2px; transition: height 0.5s ease;"></div>
                 <div style="font-size: 11px; color: var(--text-secondary); white-space: nowrap;">${d.month.substring(0, 3)}</div>
             </div>
@@ -305,7 +337,7 @@ async function loadBills() {
                 <td style="padding: 15px; font-weight: 600;">#${p.paymentId}</td>
                 <td style="padding: 15px;">#${p.bookingId}</td>
                 <td style="padding: 15px;">${new Date(p.paymentDate).toLocaleString()}</td>
-                <td style="padding: 15px; font-weight: 600; color: var(--primary-color);">$${p.amount.toFixed(2)}</td>
+                <td style="padding: 15px; font-weight: 600; color: var(--primary-color);">${formatPrice(p.amount)}</td>
                 <td style="padding: 15px;">${p.paymentMethod}</td>
                 <td style="padding: 15px;"><span class="status-badge status-available">${p.paymentStatus}</span></td>
             </tr>

@@ -83,7 +83,7 @@ function renderRooms(rooms) {
         <tr style="border-bottom: 1px solid #eee;">
             <td style="padding: 15px;">${room.roomNumber}</td>
             <td style="padding: 15px;">${room.type}</td>
-            <td style="padding: 15px;">$${room.price}</td>
+            <td style="padding: 15px;">${formatPrice(room.price)}</td>
             <td style="padding: 15px;"><span class="status-badge status-${room.status.toLowerCase()}">${room.status}</span></td>
             <td style="padding: 15px;">
                 <select onchange="updateRoomStatus(${room.roomId}, this.value)" 
@@ -207,7 +207,7 @@ async function fetchAvailableRooms() {
         availableRooms = rooms.filter(r => r.status === 'Available');
         const select = document.getElementById('roomSelect');
         select.innerHTML = '<option value="">-- Choose Available Room --</option>' +
-            availableRooms.map(r => `<option value="${r.roomId}">${r.roomNumber} - ${r.type} ($${r.price})</option>`).join('');
+            availableRooms.map(r => `<option value="${r.roomId}">${r.roomNumber} - ${r.type} (${formatPrice(r.price)})</option>`).join('');
     } catch (err) { console.error('Error fetching rooms:', err); }
 }
 
@@ -233,8 +233,38 @@ function calculateTotal() {
     }
 
     const total = diffDays * room.price;
-    document.getElementById('totalAmountDisplay').innerText = `$${total.toFixed(2)}`;
+    document.getElementById('totalAmountDisplay').innerText = formatPrice(total);
     document.getElementById('totalPriceInput').value = total;
+}
+
+function formatPrice(usdAmount) {
+    if (currentCurrency === 'LKR') {
+        const lkrAmount = usdAmount * EXCHANGE_RATE;
+        return `Rs ${lkrAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    }
+    return `$${usdAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+}
+
+function setCurrency(currency) {
+    currentCurrency = currency;
+    localStorage.setItem('currency', currency);
+    updateCurrencyUI();
+
+    // Reload data to reflect new currency
+    loadStats();
+    loadRooms();
+    loadBookings();
+    if (currentBillingBooking) {
+        showBillPreview(currentBillingBooking);
+    }
+}
+
+function updateCurrencyUI() {
+    document.querySelectorAll('.currency-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    const activeBtn = document.getElementById(`toggle-${currentCurrency}`);
+    if (activeBtn) activeBtn.classList.add('active');
 }
 
 async function handleBookingSubmit(e) {
@@ -374,7 +404,7 @@ function showBillPreview(booking) {
     document.getElementById('bill-room-num').innerText = booking.roomNumber;
 
     const basePrice = booking.totalPrice;
-    document.getElementById('bill-base-price').innerText = `$${basePrice.toFixed(2)}`;
+    document.getElementById('bill-base-price').innerText = formatPrice(basePrice);
 
     recalculateBill();
 }
@@ -383,14 +413,13 @@ function recalculateBill() {
     if (!currentBillingBooking) return;
 
     const basePrice = currentBillingBooking.totalPrice;
-    const tax = basePrice * 0.10;
     const discount = parseFloat(document.getElementById('billDiscountInput').value) || 0;
     const total = basePrice + tax - discount;
 
-    document.getElementById('bill-tax').innerText = `$${tax.toFixed(2)}`;
-    document.getElementById('bill-discount').innerText = `-$${discount.toFixed(2)}`;
+    document.getElementById('bill-tax').innerText = formatPrice(tax);
+    document.getElementById('bill-discount').innerText = `-${formatPrice(discount)}`;
     document.getElementById('discount-row').style.display = discount > 0 ? 'table-row' : 'none';
-    document.getElementById('bill-total').innerText = `$${total.toFixed(2)}`;
+    document.getElementById('bill-total').innerText = formatPrice(total);
 }
 
 async function finalizeAndPrint() {
