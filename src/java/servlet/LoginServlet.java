@@ -1,6 +1,6 @@
 package servlet;
 
-import modal.Staff;
+import model.Staff;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;

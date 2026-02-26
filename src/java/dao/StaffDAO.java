@@ -1,6 +1,6 @@
 package dao;
 
-import modal.Staff;
+import model.Staff;
 import util.DBConnection;
 import java.sql.Connection;
 import java.sql.PreparedStatement;

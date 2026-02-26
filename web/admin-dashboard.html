@@ -23,6 +23,8 @@
                 <a href="#" class="nav-item" onclick="showSection('rooms')"><i class="fas fa-bed"></i> Rooms</a>
                 <a href="#" class="nav-item" onclick="showSection('bookings')"><i class="fas fa-calendar-check"></i>
                     Bookings</a>
+                <a href="#" class="nav-item" onclick="showSection('reports')"><i class="fas fa-file-invoice-dollar"></i>
+                    Reports</a>
                 <a href="#" class="nav-item" style="margin-top: auto; color: var(--error);" onclick="handleLogout()"><i
                         class="fas fa-sign-out-alt"></i> Logout</a>
             </nav>
@@ -106,6 +108,7 @@
                     <table style="width: 100%; border-collapse: collapse; text-align: left;">
                         <thead>
                             <tr style="border-bottom: 1px solid #ddd;">
+                                <th style="padding: 15px;">ID</th>
                                 <th style="padding: 15px;">Guest Name</th>
                                 <th style="padding: 15px;">Room</th>
                                 <th style="padding: 15px;">Check-in</th>
@@ -116,6 +119,57 @@
                         </thead>
                         <tbody id="bookings-table-body">
                             <!-- JS will populate this -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Reports Section -->
+            <section id="reports-section" style="display: none;">
+                <div class="stats-grid" style="margin-bottom: 30px;">
+                    <div class="stat-card glass">
+                        <span class="stat-label">Cancellation Rate</span>
+                        <span class="stat-value" id="cancellation-rate">0%</span>
+                        <span style="font-size: 11px; color: var(--text-secondary);" id="cancellation-count">0 of 0
+                            bookings</span>
+                    </div>
+                    <div class="stat-card glass">
+                        <span class="stat-label">Best Performing Month</span>
+                        <span class="stat-value" id="best-month">-</span>
+                    </div>
+                </div>
+
+                <div class="glass" style="padding: 30px; margin-bottom: 30px;">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <h3>Monthly Revenue</h3>
+                        <div style="color: var(--primary-color); font-weight: 600;">Year 2026</div>
+                    </div>
+                    <div id="revenue-chart"
+                        style="display: flex; align-items: flex-end; gap: 20px; height: 200px; padding-top: 20px;">
+                        <!-- Chart bars will be injected here -->
+                    </div>
+                </div>
+            </section>
+            <!-- Payments Section -->
+            <section id="bills-section" style="display: none;">
+                <div style="margin-bottom: 25px;">
+                    <h3>Payment History</h3>
+                </div>
+                <div class="glass" style="overflow-x: auto;">
+                    <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                        <thead>
+                            <tr style="border-bottom: 1px solid #ddd;">
+                                <th style="padding: 15px;">Payment ID</th>
+                                <th style="padding: 15px;">Booking ID</th>
+                                <th style="padding: 15px;">Date</th>
+                                <th style="padding: 15px;">Amount</th>
+                                <th style="padding: 15px;">Method</th>
+                                <th style="padding: 15px;">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bills-table-body">
+                            <!-- JS will populate -->
                         </tbody>
                     </table>
                 </div>
@@ -149,9 +203,7 @@
                     <label>Status</label>
                     <select name="status" class="form-input" required>
                         <option value="Available">Available</option>
-                        <option value="Booked">Booked</option>
                         <option value="Occupied">Occupied</option>
-                        <option value="Cleaning">Cleaning</option>
                         <option value="Maintenance">Maintenance</option>
                     </select>
                 </div>

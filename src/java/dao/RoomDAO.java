@@ -1,6 +1,6 @@
 package dao;
 
-import modal.Room;
+import model.Room;
 import util.DBConnection;
 import java.sql.*;
 import java.util.ArrayList;
@@ -107,7 +107,7 @@ public class RoomDAO {
     public boolean deleteRoom(int roomId) {
         // Check status before deletion
         Room room = getRoomById(roomId);
-        if (room == null || "Occupied".equals(room.getStatus()) || "Booked".equals(room.getStatus())) {
+        if (room == null || "Occupied".equals(room.getStatus())) {
             return false;
         }
 

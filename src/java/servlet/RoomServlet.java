@@ -1,13 +1,13 @@
 package servlet;
 
 import dao.RoomDAO;
-import modal.Room;
+import model.Room;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import modal.Staff;
+import model.Staff;
 import java.io.BufferedReader;
 import java.util.stream.Collectors;
 import org.json.JSONObject;

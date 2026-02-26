@@ -1,4 +1,4 @@
-package modal;
+package model;
 
 public class Room {
     private int roomId;
