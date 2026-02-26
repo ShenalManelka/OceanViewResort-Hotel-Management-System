@@ -16,17 +16,20 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function showSection(sectionId) {
-    const sections = ['overview', 'rooms', 'bookings'];
+    const sections = ['overview', 'rooms', 'bookings', 'billing'];
     sections.forEach(s => {
         const el = document.getElementById(`${s}-section`);
         if (el) el.style.display = s === sectionId ? 'block' : 'none';
+        else console.warn(`Section ${s}-section not found`);
     });
 
     // Update active nav item
     document.querySelectorAll('.nav-item').forEach(item => {
         item.classList.remove('active');
         const onclick = item.getAttribute('onclick');
-        if (onclick && onclick.includes(sectionId)) {
+        if (onclick && onclick.includes(`showSection('${sectionId}')`)) {
+            item.classList.add('active');
+        } else if (onclick && onclick.includes(`showSection("${sectionId}")`)) {
             item.classList.add('active');
         }
     });
@@ -35,15 +38,17 @@ function showSection(sectionId) {
     const titles = {
         'overview': 'Reception Overview',
         'rooms': 'Room Availability',
-        'bookings': 'Check-ins'
+        'bookings': 'Check-ins',
+        'billing': 'Guest Payments'
     };
     const pageTitle = document.getElementById('page-title');
-    if (pageTitle) pageTitle.innerText = titles[sectionId];
+    if (pageTitle) pageTitle.innerText = titles[sectionId] || 'Reception';
 
     // Load data for the section
     if (sectionId === 'overview') loadStats();
     if (sectionId === 'rooms') loadRooms();
     if (sectionId === 'bookings') loadBookings();
+    if (sectionId === 'billing') cancelBilling();
 }
 
 async function loadStats() {
@@ -398,8 +403,6 @@ async function finalizeAndPrint() {
 
     const paymentData = {
         bookingId: currentBillingBooking.bookingId,
-        taxAmount: tax,
-        discountAmount: discount,
         amount: total,
         paymentMethod: paymentMethod,
         paymentStatus: 'Paid'
@@ -413,12 +416,19 @@ async function finalizeAndPrint() {
         });
 
         if (response.ok) {
+            // Hide controls before printing
+            document.getElementById('bill-controls').style.display = 'none';
             window.print();
+            // Restore controls after print
+            document.getElementById('bill-controls').style.display = 'grid';
+
+            alert('Payment recorded successfully!');
             cancelBilling();
             loadRooms();
             loadBookings();
         } else {
-            alert('Failed to record payment');
+            const errData = await response.json();
+            alert('Failed to record payment: ' + (errData.error || 'Server error'));
         }
     } catch (err) {
         alert('Error saving payment');

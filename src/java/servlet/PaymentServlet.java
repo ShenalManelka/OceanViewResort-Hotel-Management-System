@@ -25,18 +25,18 @@ public class PaymentServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        String bookingIdStr = request.getParameter("bookingId");
         response.setContentType("application/json");
+        String bookingIdStr = request.getParameter("bookingId");
 
         if (bookingIdStr != null) {
             int bookingId = Integer.parseInt(bookingIdStr);
             Payment payment = paymentDAO.getPaymentByBookingId(bookingId);
+
             if (payment != null) {
                 response.getWriter().print(new JSONObject(payment).toString());
             } else {
                 // If payment doesn't exist, fetch booking details for new payment
-                List<Booking> all = bookingDAO.getAllBookings();
-                Booking target = all.stream().filter(b -> b.getBookingId() == bookingId).findFirst().orElse(null);
+                Booking target = bookingDAO.getBookingById(bookingId);
                 if (target != null) {
                     JSONObject obj = new JSONObject();
                     obj.put("found", true);
@@ -50,6 +50,7 @@ public class PaymentServlet extends HttpServlet {
             return;
         }
 
+        // Return all payments
         List<Payment> payments = paymentDAO.getAllPayments();
         JSONArray array = new JSONArray();
         for (Payment p : payments) {
@@ -62,22 +63,37 @@ public class PaymentServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        String body = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
-        JSONObject json = new JSONObject(body);
+        response.setContentType("application/json");
+        try {
+            String body = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
 
-        Payment payment = new Payment();
-        payment.setBookingId(json.getInt("bookingId"));
-        payment.setPaymentMethod(json.optString("paymentMethod", "Cash"));
-        payment.setAmount(json.getDouble("amount"));
-        payment.setTaxAmount(json.optDouble("taxAmount", 0.0));
-        payment.setDiscountAmount(json.optDouble("discountAmount", 0.0));
-        payment.setPaymentStatus(json.optString("paymentStatus", "Paid"));
+            if (body == null || body.trim().isEmpty()) {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                response.getWriter().print("{\"error\": \"Empty request body\"}");
+                return;
+            }
 
-        if (paymentDAO.addPayment(payment)) {
-            response.setStatus(HttpServletResponse.SC_OK);
-            response.getWriter().print("{\"message\": \"Payment recorded successfully\"}");
-        } else {
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Failed to record payment");
+            JSONObject json = new JSONObject(body);
+
+            Payment payment = new Payment();
+            payment.setBookingId(json.getInt("bookingId"));
+            payment.setPaymentMethod(json.optString("paymentMethod", "Cash"));
+            payment.setAmount(json.getDouble("amount"));
+            payment.setPaymentStatus(json.optString("paymentStatus", "Paid"));
+
+            if (paymentDAO.addPayment(payment)) {
+                response.setStatus(HttpServletResponse.SC_OK);
+                response.getWriter().print("{\"message\": \"Payment recorded successfully\"}");
+            } else {
+                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                response.getWriter().print("{\"error\": \"Failed to record payment in database\"}");
+            }
+
+        } catch (Exception e) {
+            System.err.println("Error in PaymentServlet.doPost: " + e.getMessage());
+            e.printStackTrace();
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.getWriter().print("{\"error\": \"Server error: " + e.getMessage() + "\"}");
         }
     }
 }

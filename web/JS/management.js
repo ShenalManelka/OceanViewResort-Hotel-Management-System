@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // --- Navigation Logic ---
 function showSection(sectionId) {
-    const sections = ['overview', 'rooms', 'bookings', 'reports'];
+    const sections = ['overview', 'rooms', 'bookings', 'reports', 'bills'];
     sections.forEach(s => {
         const el = document.getElementById(`${s}-section`);
         if (el) el.style.display = (s === sectionId) ? 'block' : 'none';
@@ -24,7 +24,7 @@ function showSection(sectionId) {
     document.querySelectorAll('.nav-item').forEach(item => {
         item.classList.remove('active');
         const onclick = item.getAttribute('onclick');
-        if (onclick && onclick.includes(sectionId)) {
+        if (onclick && onclick.includes(`showSection('${sectionId}')`)) {
             item.classList.add('active');
         }
     });
@@ -33,15 +33,17 @@ function showSection(sectionId) {
         'overview': 'Dashboard Overview',
         'rooms': 'Room Management',
         'bookings': 'Reservations',
-        'reports': 'Business Reports'
+        'reports': 'Business Reports',
+        'bills': 'Payment History'
     };
     const pageTitle = document.getElementById('page-title');
-    if (pageTitle) pageTitle.innerText = titles[sectionId];
+    if (pageTitle) pageTitle.innerText = titles[sectionId] || 'Dashboard';
 
     if (sectionId === 'overview') loadStats();
     if (sectionId === 'rooms') loadRooms();
     if (sectionId === 'bookings') loadBookings();
     if (sectionId === 'reports') loadReports();
+    if (sectionId === 'bills') loadBills();
 }
 
 // --- Data Loading ---
@@ -289,6 +291,28 @@ function renderRevenueChart(data) {
             </div>
         `;
     }).join('');
+}
+
+async function loadBills() {
+    try {
+        const response = await fetch('admin/payments');
+        const payments = await response.json();
+        const tbody = document.getElementById('bills-table-body');
+        if (!tbody) return;
+
+        tbody.innerHTML = payments.map(p => `
+            <tr style="border-bottom: 1px solid #eee;">
+                <td style="padding: 15px; font-weight: 600;">#${p.paymentId}</td>
+                <td style="padding: 15px;">#${p.bookingId}</td>
+                <td style="padding: 15px;">${new Date(p.paymentDate).toLocaleString()}</td>
+                <td style="padding: 15px; font-weight: 600; color: var(--primary-color);">$${p.amount.toFixed(2)}</td>
+                <td style="padding: 15px;">${p.paymentMethod}</td>
+                <td style="padding: 15px;"><span class="status-badge status-available">${p.paymentStatus}</span></td>
+            </tr>
+        `).join('');
+    } catch (err) {
+        console.error('Error loading payments:', err);
+    }
 }
 
 // --- Authentication & Logout ---

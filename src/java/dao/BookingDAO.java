@@ -109,7 +109,7 @@ public class BookingDAO {
                     if ("Checked-in".equalsIgnoreCase(status))
                         roomStatus = "Occupied";
                     else if ("Completed".equalsIgnoreCase(status))
-                        roomStatus = "Cleaning";
+                        roomStatus = "Available";
                     else if ("Cancelled".equalsIgnoreCase(status))
                         roomStatus = "Available";
 
@@ -220,4 +220,39 @@ public class BookingDAO {
         }
         return false;
     }
+
+    public Booking getBookingById(int bookingId) {
+    String query = "SELECT b.*, u.first_name, u.last_name, u.email, r.room_number " +
+                   "FROM bookings b " +
+                   "JOIN users u ON b.user_id = u.user_id " +
+                   "JOIN rooms r ON b.room_id = r.room_id " +
+                   "WHERE b.booking_id = ?";
+
+    try (Connection conn = DBConnection.getInstance().getConnection();
+         PreparedStatement ps = conn.prepareStatement(query)) {
+
+        ps.setInt(1, bookingId);
+        try (ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                Booking b = new Booking(
+                    rs.getInt("booking_id"),
+                    rs.getInt("user_id"),
+                    rs.getInt("room_id"),
+                    rs.getDate("check_in"),
+                    rs.getDate("check_out"),
+                    rs.getDouble("total_price"),
+                    rs.getString("status")
+                );
+                b.setGuestName(rs.getString("first_name") + " " + rs.getString("last_name"));
+                b.setGuestEmail(rs.getString("email"));
+                b.setRoomNumber(rs.getString("room_number"));
+                return b;
+            }
+        }
+
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    return null;
+}
 }
