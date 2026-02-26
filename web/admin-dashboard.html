@@ -12,41 +12,66 @@
 <body>
     <div class="app-container">
         <!-- Sidebar -->
-        <div class="sidebar glass" style="border-radius: 0; margin-right: 2px;">
-            <div class="brand" style="margin-bottom: 40px; text-align: center;">
-                <h2 style="color: var(--primary-color); font-size: 20px;">Ocean View <span
-                        style="font-size: 12px; display: block; color: var(--text-secondary);">Admin</span></h2>
+        <aside class="sidebar">
+            <div class="brand"
+                style="margin-bottom: 48px; display: flex; align-items: center; gap: 12px; padding: 0 12px;">
+                <div
+                    style="width: 42px; height: 42px; background: var(--primary-color); border-radius: 12px; display: grid; place-items: center; color: white; font-size: 1.2rem; box-shadow: var(--shadow-md);">
+                    <i class="fas fa-hotel"></i>
+                </div>
+                <div>
+                    <h2 style="color: var(--text-primary); font-size: 18px; margin: 0; line-height: 1.1;">Ocean View
+                    </h2>
+                    <span
+                        style="font-size: 11px; color: var(--text-secondary); font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">Management</span>
+                </div>
             </div>
-            <nav style="display: flex; flex-direction: column; gap: 10px;">
-                <a href="#" class="nav-item active" onclick="showSection('overview')"><i class="fas fa-chart-line"></i>
-                    Overview</a>
-                <a href="#" class="nav-item" onclick="showSection('rooms')"><i class="fas fa-bed"></i> Rooms</a>
-                <a href="#" class="nav-item" onclick="showSection('bookings')"><i class="fas fa-calendar-check"></i>
-                    Bookings</a>
-                <a href="#" class="nav-item" onclick="showSection('bills')"><i class="fas fa-history"></i>
-                    Payments</a>
-                <a href="#" class="nav-item" onclick="showSection('reports')"><i class="fas fa-chart-pie"></i>
-                    Reports</a>
-                <a href="#" class="nav-item" style="margin-top: auto; color: var(--error);" onclick="handleLogout()"><i
-                        class="fas fa-sign-out-alt"></i> Logout</a>
-                <div class="currency-toggle glass"
-                    style="margin-top: 10px; padding: 10px; display: flex; justify-content: space-around; font-size: 12px;">
-                    <span id="toggle-USD" class="currency-btn active" onclick="setCurrency('USD')">USD ($)</span>
-                    <span id="toggle-LKR" class="currency-btn" onclick="setCurrency('LKR')">LKR (Rs)</span>
+            <nav>
+                <a href="#" class="nav-item active" onclick="showSection('overview')">
+                    <i class="fas fa-th-large"></i> Overview
+                </a>
+                <a href="#" class="nav-item" onclick="showSection('rooms')">
+                    <i class="fas fa-bed"></i> Rooms
+                </a>
+                <a href="#" class="nav-item" onclick="showSection('bookings')">
+                    <i class="fas fa-calendar-alt"></i> Bookings
+                </a>
+                <a href="#" class="nav-item" onclick="showSection('bills')">
+                    <i class="fas fa-credit-card"></i> Payments
+                </a>
+                <a href="#" class="nav-item" onclick="showSection('reports')">
+                    <i class="fas fa-analytics"></i> Reports
+                </a>
+                <div
+                    style="margin-top: 40px; padding: 0 12px; border-top: 1px solid var(--glass-border); padding-top: 24px;">
+                    <a href="#" class="nav-item" style="color: var(--error);" onclick="handleLogout()">
+                        <i class="fas fa-power-off"></i> Logout
+                    </a>
                 </div>
             </nav>
-        </div>
+        </aside>
 
         <!-- Main Content -->
         <main class="main-content">
             <!-- Header -->
-            <header style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px;">
-                <h1 id="page-title">Admin Overview</h1>
-                <div class="user-info" style="display: flex; align-items: center; gap: 15px;">
-                    <span id="admin-name" style="font-weight: 500;">Administrator</span>
+            <header style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 48px;">
+                <div>
+                    <h1 id="page-title" style="font-size: 32px; font-weight: 800; letter-spacing: -0.5px; margin: 0;">
+                        Dashboard</h1>
+                    <p style="color: var(--text-secondary); font-size: 14px; margin-top: 4px;">Welcome back, System
+                        Admin</p>
+                </div>
+                <div class="user-info"
+                    style="display: flex; align-items: center; gap: 16px; background: white; padding: 8px 16px; border-radius: 30px; box-shadow: var(--shadow-sm); border: 1px solid var(--glass-border);">
+                    <div style="text-align: right;">
+                        <span id="admin-name"
+                            style="font-weight: 700; font-size: 14px; display: block;">Administrator</span>
+                        <span style="font-size: 11px; color: var(--text-secondary); font-weight: 500;">Head
+                            Office</span>
+                    </div>
                     <div
-                        style="width: 40px; height: 40px; background: var(--primary-color); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white;">
-                        <i class="fas fa-user-shield"></i>
+                        style="width: 40px; height: 40px; background: linear-gradient(135deg, var(--primary-color), var(--primary-dark)); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; box-shadow: 0 4px 10px rgba(67,97,238,0.3);">
+                        <i class="fas fa-user-shield" style="font-size: 14px;"></i>
                     </div>
                 </div>
             </header>
@@ -55,29 +80,45 @@
             <section id="overview-section">
                 <div class="stats-grid">
                     <div class="stat-card glass">
+                        <div class="stat-icon"><i class="fas fa-door-open"></i></div>
                         <span class="stat-label">Total Rooms</span>
                         <span class="stat-value" id="total-rooms">0</span>
                     </div>
                     <div class="stat-card glass">
+                        <div class="stat-icon" style="background: rgba(6, 214, 160, 0.1); color: var(--success);"><i
+                                class="fas fa-check-circle"></i></div>
                         <span class="stat-label">Available</span>
-                        <span class="stat-value" id="available-rooms" style="color: #2e7d32;">0</span>
+                        <span class="stat-value" id="available-rooms" style="color: var(--success);">0</span>
                     </div>
                     <div class="stat-card glass">
+                        <div class="stat-icon" style="background: rgba(255, 209, 102, 0.1); color: var(--warning);"><i
+                                class="fas fa-user-clock"></i></div>
                         <span class="stat-label">Occupied</span>
-                        <span class="stat-value" id="occupied-rooms" style="color: #ef6c00;">0</span>
+                        <span class="stat-value" id="occupied-rooms" style="color: var(--warning);">0</span>
                     </div>
                     <div class="stat-card glass">
+                        <div class="stat-icon" style="background: rgba(239, 71, 111, 0.1); color: var(--error);"><i
+                                class="fas fa-tools"></i></div>
                         <span class="stat-label">Maintenance</span>
-                        <span class="stat-value" id="maintenance-rooms" style="color: #c62828;">0</span>
+                        <span class="stat-value" id="maintenance-rooms" style="color: var(--error);">0</span>
                     </div>
                     <div class="stat-card glass">
+                        <div class="stat-icon" style="background: rgba(76, 201, 240, 0.1); color: var(--accent-color);">
+                            <i class="fas fa-wallet"></i></div>
                         <span class="stat-label">Total Revenue</span>
-                        <span class="stat-value" id="total-revenue">$0.00</span>
+                        <span class="stat-value" id="total-revenue">Rs. 0.00</span>
                     </div>
                 </div>
-                <div class="glass" style="padding: 30px;">
-                    <h3>System Status</h3>
-                    <p style="color: var(--text-secondary);">All systems operational. Admin access confirmed.</p>
+                <div class="glass" style="padding: 32px; display: flex; align-items: center; gap: 24px;">
+                    <div
+                        style="width: 64px; height: 64px; background: var(--success); border-radius: 50%; display: grid; place-items: center; color: white; font-size: 24px; box-shadow: 0 8px 20px rgba(6,214,160,0.3);">
+                        <i class="fas fa-shield-check"></i>
+                    </div>
+                    <div>
+                        <h3 style="margin-bottom: 4px;">System Operational</h3>
+                        <p style="color: var(--text-secondary); font-size: 15px;">All hotel management modules are
+                            synced and performing normally.</p>
+                    </div>
                 </div>
             </section>
 
@@ -229,43 +270,53 @@
 
     <script src="JS/management.js"></script>
     <style>
-        .nav-item {
-            text-decoration: none;
-            color: var(--text-secondary);
-            padding: 12px 15px;
-            border-radius: var(--radius);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            transition: all 0.3s;
-        }
-
-        .nav-item:hover,
-        .nav-item.active {
-            background: rgba(67, 97, 238, 0.1);
-            color: var(--primary-color);
-        }
-
         .status-badge {
-            padding: 5px 12px;
-            border-radius: 20px;
+            padding: 6px 14px;
+            border-radius: 8px;
             font-size: 12px;
-            font-weight: 500;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .status-available {
-            background: #e8f5e9;
-            color: #2e7d32;
+            background: rgba(6, 214, 160, 0.1);
+            color: var(--success);
         }
 
         .status-occupied {
-            background: #fff3e0;
-            color: #ef6c00;
+            background: rgba(255, 209, 102, 0.1);
+            color: var(--warning);
         }
 
         .status-maintenance {
-            background: #ffebee;
-            color: #c62828;
+            background: rgba(239, 71, 111, 0.1);
+            color: var(--error);
+        }
+
+        table th {
+            color: var(--text-secondary);
+            font-weight: 700;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 20px 15px;
+        }
+
+        table td {
+            padding: 20px 15px;
+            font-size: 14px;
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        tr {
+            transition: var(--transition);
+        }
+
+        tbody tr:hover {
+            background: rgba(67, 97, 238, 0.02);
+            transform: scale(1.002);
         }
     </style>
 </body>

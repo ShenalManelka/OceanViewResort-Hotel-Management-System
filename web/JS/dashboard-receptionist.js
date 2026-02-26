@@ -185,7 +185,7 @@ async function openBookingModal() {
 function closeBookingModal() {
     document.getElementById('bookingModal').style.display = 'none';
     document.getElementById('bookingForm').reset();
-    document.getElementById('totalAmountDisplay').innerText = '$0.00';
+    document.getElementById('totalAmountDisplay').innerText = 'Rs. 0.00';
 }
 
 async function fetchGuests() {
@@ -237,34 +237,8 @@ function calculateTotal() {
     document.getElementById('totalPriceInput').value = total;
 }
 
-function formatPrice(usdAmount) {
-    if (currentCurrency === 'LKR') {
-        const lkrAmount = usdAmount * EXCHANGE_RATE;
-        return `Rs ${lkrAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-    }
-    return `$${usdAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-}
-
-function setCurrency(currency) {
-    currentCurrency = currency;
-    localStorage.setItem('currency', currency);
-    updateCurrencyUI();
-
-    // Reload data to reflect new currency
-    loadStats();
-    loadRooms();
-    loadBookings();
-    if (currentBillingBooking) {
-        showBillPreview(currentBillingBooking);
-    }
-}
-
-function updateCurrencyUI() {
-    document.querySelectorAll('.currency-btn').forEach(btn => {
-        btn.classList.remove('active');
-    });
-    const activeBtn = document.getElementById(`toggle-${currentCurrency}`);
-    if (activeBtn) activeBtn.classList.add('active');
+function formatPrice(lkrAmount) {
+    return `Rs. ${lkrAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
 
 async function handleBookingSubmit(e) {
@@ -413,6 +387,7 @@ function recalculateBill() {
     if (!currentBillingBooking) return;
 
     const basePrice = currentBillingBooking.totalPrice;
+    const tax = basePrice * 0.10;
     const discount = parseFloat(document.getElementById('billDiscountInput').value) || 0;
     const total = basePrice + tax - discount;
 
