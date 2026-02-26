@@ -13,14 +13,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+// --- Navigation Logic ---
 function showSection(sectionId) {
     const sections = ['overview', 'rooms', 'bookings'];
     sections.forEach(s => {
         const el = document.getElementById(`${s}-section`);
-        if (el) el.style.display = s === sectionId ? 'block' : 'none';
+        if (el) el.style.display = (s === sectionId) ? 'block' : 'none';
     });
 
-    // Update active nav item
     document.querySelectorAll('.nav-item').forEach(item => {
         item.classList.remove('active');
         const onclick = item.getAttribute('onclick');
@@ -29,7 +29,6 @@ function showSection(sectionId) {
         }
     });
 
-    // Update title
     const titles = {
         'overview': 'Dashboard Overview',
         'rooms': 'Room Management',
@@ -38,12 +37,12 @@ function showSection(sectionId) {
     const pageTitle = document.getElementById('page-title');
     if (pageTitle) pageTitle.innerText = titles[sectionId];
 
-    // Load data for the section
     if (sectionId === 'overview') loadStats();
     if (sectionId === 'rooms') loadRooms();
     if (sectionId === 'bookings') loadBookings();
 }
 
+// --- Data Loading ---
 async function loadStats() {
     try {
         const response = await fetch('admin/stats');
@@ -54,15 +53,11 @@ async function loadStats() {
             if (el) el.innerText = val;
         };
 
-        updateEl('total-rooms', data.totalRooms);
-        updateEl('active-bookings', data.activeBookings || 0);
+        updateEl('total-rooms', data.totalRooms || 0);
+        updateEl('available-rooms', data.availableRooms || 0);
+        updateEl('occupied-rooms', data.occupiedRooms || 0);
+        updateEl('maintenance-rooms', data.maintenanceRooms || 0);
         updateEl('total-revenue', `$${(data.totalRevenue || 0).toLocaleString()}`);
-
-        // Detailed room counts
-        if (data.availableRooms !== undefined) updateEl('available-rooms', data.availableRooms);
-        if (data.occupiedRooms !== undefined) updateEl('occupied-rooms', data.occupiedRooms);
-        if (data.maintenanceRooms !== undefined) updateEl('maintenance-rooms', data.maintenanceRooms);
-
     } catch (err) {
         console.error('Error loading stats:', err);
     }
@@ -75,44 +70,55 @@ async function loadRooms() {
         const tbody = document.getElementById('rooms-table-body');
         if (!tbody) return;
 
-        tbody.innerHTML = rooms.map(room => `
+        tbody.innerHTML = rooms.map(room => {
+            // Escape the room object to safely pass it into the onclick function
+            const roomJson = JSON.stringify(room).replace(/"/g, '&quot;');
+            return `
             <tr style="border-bottom: 1px solid #eee;">
                 <td style="padding: 15px;">${room.roomNumber}</td>
                 <td style="padding: 15px;">${room.type}</td>
                 <td style="padding: 15px;">$${room.price}</td>
-                <td style="padding: 15px;"><span class="status-badge status-${room.status.toLowerCase()}">${room.status}</span></td>
                 <td style="padding: 15px;">
-                    <button class="btn" style="color: var(--primary-color);" onclick="openRoomModal(${JSON.stringify(room).replace(/"/g, '&quot;')})"><i class="fas fa-edit"></i></button>
-                    <button class="btn" style="color: var(--error);" onclick="deleteRoom(${room.roomId})"><i class="fas fa-trash"></i></button>
+                    <span class="status-badge status-${room.status.toLowerCase()}">${room.status}</span>
                 </td>
-            </tr>
-        `).join('');
+                <td style="padding: 15px;">
+                    <button class="btn" style="color: var(--primary-color); cursor:pointer;" onclick="openRoomModal(${roomJson})">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn" style="color: var(--error); cursor:pointer;" onclick="deleteRoom(${room.roomId})">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </td>
+            </tr>`;
+        }).join('');
     } catch (err) {
         console.error('Error loading rooms:', err);
     }
 }
 
-// Room Modal Management
+// --- Room Modal Logic (Add & Update) ---
 function openRoomModal(room = null) {
     const modal = document.getElementById('roomModal');
     const form = document.getElementById('roomForm');
     const title = document.getElementById('modalTitle');
 
-    if (room) {
+    form.reset(); // Clear previous values
+
+    if (room && room.roomId) {
         title.innerText = 'Edit Room';
+        // Ensure your HTML input names match these keys exactly
         form.roomId.value = room.roomId;
         form.roomNumber.value = room.roomNumber;
         form.type.value = room.type;
         form.price.value = room.price;
         form.status.value = room.status;
-        form.description.value = room.description;
+        form.description.value = room.description || '';
     } else {
         title.innerText = 'Add New Room';
-        form.reset();
-        form.roomId.value = '';
+        form.roomId.value = ''; // Ensure hidden ID is empty for new rooms
     }
 
-    modal.style.display = 'flex';
+    modal.style.display = 'grid';
 }
 
 function closeRoomModal() {
@@ -123,15 +129,18 @@ async function handleRoomSubmit(e) {
     e.preventDefault();
     const formData = new FormData(e.target);
     const roomId = formData.get('roomId');
-    const action = roomId ? 'update' : 'add';
 
+    // Determine if we are adding or updating
+    const action = (roomId && roomId !== "") ? 'update' : 'add';
+
+    // Create URL parameters for standard backend compatibility
     const params = new URLSearchParams(formData);
     params.append('action', action);
 
     try {
         const response = await fetch('admin/rooms', {
             method: 'POST',
-            body: params
+            body: params // Sending as URL-encoded form data
         });
 
         if (response.ok) {
@@ -140,10 +149,11 @@ async function handleRoomSubmit(e) {
             loadStats();
         } else {
             const errorText = await response.text();
-            alert('Error: ' + errorText);
+            alert('Operation failed: ' + errorText);
         }
     } catch (err) {
-        alert('Connection error');
+        alert('Network error. Is the server running?');
+        console.error(err);
     }
 }
 
@@ -151,9 +161,7 @@ async function deleteRoom(id) {
     if (confirm("Are you sure you want to delete this room?")) {
         try {
             const response = await fetch(`admin/rooms?action=delete&roomId=${id}`, { method: 'POST' });
-            if (response.status === 409) {
-                alert(await response.text());
-            } else if (response.ok) {
+            if (response.ok) {
                 loadRooms();
                 loadStats();
             } else {
@@ -165,7 +173,7 @@ async function deleteRoom(id) {
     }
 }
 
-// ... (loadBookings and other functions remain the same)
+// --- Bookings Logic ---
 async function loadBookings() {
     try {
         const response = await fetch('admin/bookings');
@@ -203,6 +211,7 @@ async function updateBookingStatus(id, newStatus) {
     }
 }
 
+// --- Authentication & Logout ---
 function handleLogout() {
     if (confirm("Are you sure you want to logout?")) {
         window.location.href = 'admin/logout';

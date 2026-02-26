@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS rooms (
     room_number VARCHAR(20) NOT NULL UNIQUE,
     type ENUM('Single', 'Double', 'Suite') NOT NULL,
     price DECIMAL(10, 2) NOT NULL,
-    status ENUM('Available', 'Occupied', 'Maintenance') DEFAULT 'Available',
+    status ENUM('Available', 'Occupied', 'Maintenance', 'Booked', 'Cleaning') DEFAULT 'Available',
     description TEXT
 );
 

@@ -1,15 +1,44 @@
 <!DOCTYPE html>
-<!--
-Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
-Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit this template
--->
-<html>
-    <head>
-        <title>TODO supply a title</title>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    </head>
-    <body>
-        <div>TODO write content</div>
-    </body>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ocean View | New Page</title>
+    
+    <link rel="stylesheet" href="CSS/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        /* Quick styles for testing your layout */
+        body {
+            background: linear-gradient(135deg, #a8c0ff 0%, #3f2b96 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .content-card {
+            padding: 40px;
+            max-width: 500px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="glass content-card">
+        <i class="fas fa-tools" style="font-size: 3rem; color: #4361ee; margin-bottom: 20px;"></i>
+        <h2>New Module</h2>
+        <p style="color: #666; margin-bottom: 20px;">
+            This page is ready for your custom content. Link your JS file below to start adding logic.
+        </p>
+        <button class="btn btn-primary" onclick="history.back()">
+            <i class="fas fa-arrow-left"></i> Go Back
+        </button>
+    </div>
+
+    <script src="JS/management.js"></script>
+</body>
 </html>
