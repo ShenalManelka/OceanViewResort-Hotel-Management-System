@@ -1,13 +1,13 @@
-CREATE DATABASE IF NOT EXISTS oceanvieweresortdb;
-USE oceanvieweresortdb;
+CREATE DATABASE IF NOT EXISTS oceanviewresortdb;
+USE oceanviewresortdb;
 
--- 1. Admins Table
-CREATE TABLE IF NOT EXISTS admins (
+-- 1. Staff Table (Common for all roles)
+CREATE TABLE IF NOT EXISTS staff (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    username VARCHAR(50) NOT NULL UNIQUE,
+    email VARCHAR(100) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
     full_name VARCHAR(100) NOT NULL,
-    email VARCHAR(100) NOT NULL
+    role ENUM('ADMIN', 'RECEPTIONIST') NOT NULL
 );
 
 -- 2. Rooms Table
@@ -32,9 +32,11 @@ CREATE TABLE IF NOT EXISTS bookings (
     FOREIGN KEY (room_id) REFERENCES rooms(room_id) ON DELETE CASCADE
 );
 
--- Seed Data (Optional)
-INSERT INTO admins (username, password, full_name, email) 
-VALUES ('admin', 'admin@1234', 'Default Admin', 'admin@oceanview.com')
+-- Seed Data
+INSERT INTO staff (email, password, full_name, role) 
+VALUES 
+('admin@oceanview.com', 'admin@1234', 'Primary Admin', 'ADMIN'),
+('reception@oceanview.com', 'staff@1234', 'Front Desk', 'RECEPTIONIST')
 ON DUPLICATE KEY UPDATE id=id;
 
 INSERT INTO rooms (room_number, type, price, status, description)

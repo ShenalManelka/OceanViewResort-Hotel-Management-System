@@ -25,13 +25,16 @@ public class DashboardServlet extends HttpServlet {
         PrintWriter out = response.getWriter();
 
         int totalRooms = roomDAO.getRoomCount();
+        int availableRooms = roomDAO.getCountByStatus("Available");
+        int occupiedRooms = roomDAO.getCountByStatus("Occupied");
+        int maintenanceRooms = roomDAO.getCountByStatus("Maintenance");
         int activeBookings = bookingDAO.getActiveBookingCount();
         double totalRevenue = bookingDAO.getTotalRevenue();
 
         // Manual JSON construction to avoid external dependencies
         String json = String.format(
-                "{\"totalRooms\": %d, \"activeBookings\": %d, \"totalRevenue\": %.2f}",
-                totalRooms, activeBookings, totalRevenue);
+                "{\"totalRooms\": %d, \"availableRooms\": %d, \"occupiedRooms\": %d, \"maintenanceRooms\": %d, \"activeBookings\": %d, \"totalRevenue\": %.2f}",
+                totalRooms, availableRooms, occupiedRooms, maintenanceRooms, activeBookings, totalRevenue);
 
         out.print(json);
         out.flush();

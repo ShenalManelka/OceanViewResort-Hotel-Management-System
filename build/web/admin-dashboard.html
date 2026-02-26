@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard | Ocean View Resort</title>
+    <title>Admin Dashboard | Ocean View Resort</title>
     <link rel="stylesheet" href="CSS/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
@@ -32,12 +32,12 @@
         <main class="main-content">
             <!-- Header -->
             <header style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px;">
-                <h1 id="page-title">Dashboard Overview</h1>
+                <h1 id="page-title">Admin Overview</h1>
                 <div class="user-info" style="display: flex; align-items: center; gap: 15px;">
-                    <span id="admin-name" style="font-weight: 500;">Admin User</span>
+                    <span id="admin-name" style="font-weight: 500;">Administrator</span>
                     <div
                         style="width: 40px; height: 40px; background: var(--primary-color); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white;">
-                        <i class="fas fa-user"></i>
+                        <i class="fas fa-user-shield"></i>
                     </div>
                 </div>
             </header>
@@ -50,8 +50,16 @@
                         <span class="stat-value" id="total-rooms">0</span>
                     </div>
                     <div class="stat-card glass">
-                        <span class="stat-label">Active Bookings</span>
-                        <span class="stat-value" id="active-bookings">0</span>
+                        <span class="stat-label">Available</span>
+                        <span class="stat-value" id="available-rooms" style="color: #2e7d32;">0</span>
+                    </div>
+                    <div class="stat-card glass">
+                        <span class="stat-label">Occupied</span>
+                        <span class="stat-value" id="occupied-rooms" style="color: #ef6c00;">0</span>
+                    </div>
+                    <div class="stat-card glass">
+                        <span class="stat-label">Maintenance</span>
+                        <span class="stat-value" id="maintenance-rooms" style="color: #c62828;">0</span>
                     </div>
                     <div class="stat-card glass">
                         <span class="stat-label">Total Revenue</span>
@@ -59,13 +67,12 @@
                     </div>
                 </div>
                 <div class="glass" style="padding: 30px;">
-                    <h3>Recent Activity</h3>
-                    <p style="color: var(--text-secondary);">Welcome back! Here's a summary of the latest resort
-                        operations.</p>
+                    <h3>System Status</h3>
+                    <p style="color: var(--text-secondary);">All systems operational. Admin access confirmed.</p>
                 </div>
             </section>
 
-            <!-- Rooms Section (Hidden by default) -->
+            <!-- Rooms Section -->
             <section id="rooms-section" style="display: none;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
                     <h3>Manage Rooms</h3>
@@ -90,7 +97,7 @@
                 </div>
             </section>
 
-            <!-- Bookings Section (Hidden by default) -->
+            <!-- Bookings Section -->
             <section id="bookings-section" style="display: none;">
                 <div style="margin-bottom: 25px;">
                     <h3>Reservations</h3>
@@ -116,7 +123,49 @@
         </main>
     </div>
 
-    <!-- Modals and JS -->
+    <!-- Room Modal -->
+    <div id="roomModal" class="modal-overlay" style="display: none;">
+        <div class="modal-content glass">
+            <h3 id="modalTitle">Add New Room</h3>
+            <form id="roomForm">
+                <input type="hidden" id="roomId" name="roomId">
+                <div class="form-group">
+                    <label>Room Number</label>
+                    <input type="text" name="roomNumber" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label>Type</label>
+                    <select name="type" class="form-input" required>
+                        <option value="Single">Single</option>
+                        <option value="Double">Double</option>
+                        <option value="Suite">Suite</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Price</label>
+                    <input type="number" name="price" step="0.01" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label>Status</label>
+                    <select name="status" class="form-input" required>
+                        <option value="Available">Available</option>
+                        <option value="Maintenance">Maintenance</option>
+                        <option value="Occupied">Occupied</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea name="description" class="form-input" rows="3"></textarea>
+                </div>
+                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                    <button type="submit" class="btn btn-primary" style="flex: 1;">Save Room</button>
+                    <button type="button" class="btn" style="flex: 1; border: 1px solid #ddd;"
+                        onclick="closeRoomModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script src="JS/management.js"></script>
     <style>
         .nav-item {
