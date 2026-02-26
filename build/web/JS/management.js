@@ -67,35 +67,8 @@ async function loadStats() {
     }
 }
 
-function formatPrice(usdAmount) {
-    if (currentCurrency === 'LKR') {
-        const lkrAmount = usdAmount * EXCHANGE_RATE;
-        return `Rs ${lkrAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-    }
-    return `$${usdAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-}
-
-function setCurrency(currency) {
-    currentCurrency = currency;
-    localStorage.setItem('currency', currency);
-    updateCurrencyUI();
-
-    // Reload data to reflect new currency
-    loadStats();
-    loadRooms();
-    loadBookings();
-    loadBills();
-    if (document.getElementById('reports-section').style.display === 'block') {
-        loadReports();
-    }
-}
-
-function updateCurrencyUI() {
-    document.querySelectorAll('.currency-btn').forEach(btn => {
-        btn.classList.remove('active');
-    });
-    const activeBtn = document.getElementById(`toggle-${currentCurrency}`);
-    if (activeBtn) activeBtn.classList.add('active');
+function formatPrice(lkrAmount) {
+    return `Rs. ${lkrAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
 
 async function loadRooms() {

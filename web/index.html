@@ -1,44 +1,116 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ocean View | New Page</title>
-    
+    <title>Ocean View Resort | Management System</title>
     <link rel="stylesheet" href="CSS/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
     <style>
-        /* Quick styles for testing your layout */
-        body {
-            background: linear-gradient(135deg, #a8c0ff 0%, #3f2b96 100%);
-            min-height: 100vh;
+        .hero-section {
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        
-        .content-card {
+            justify-content: center;
+            min-height: 100vh;
             padding: 40px;
-            max-width: 500px;
             text-align: center;
+        }
+
+        .welcome-card {
+            max-width: 600px;
+            padding: 64px 48px;
+            animation: slideUpScale 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        .logo-box {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: white;
+            border-radius: 24px;
+            display: grid;
+            place-items: center;
+            font-size: 40px;
+            margin: 0 auto 32px;
+            box-shadow: 0 20px 40px rgba(67, 97, 238, 0.2);
+            position: relative;
+        }
+
+        .logo-box::after {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            border-radius: 28px;
+            border: 2px solid var(--primary-light);
+            opacity: 0.3;
+        }
+
+        .tagline {
+            display: inline-block;
+            padding: 6px 16px;
+            background: rgba(67, 97, 238, 0.1);
+            color: var(--primary-color);
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 24px;
         }
     </style>
 </head>
+
 <body>
+    <div class="hero-section">
+        <div class="welcome-card glass">
+            <span class="tagline">Premium Hospitality</span>
 
-    <div class="glass content-card">
-        <i class="fas fa-tools" style="font-size: 3rem; color: #4361ee; margin-bottom: 20px;"></i>
-        <h2>New Module</h2>
-        <p style="color: #666; margin-bottom: 20px;">
-            This page is ready for your custom content. Link your JS file below to start adding logic.
-        </p>
-        <button class="btn btn-primary" onclick="history.back()">
-            <i class="fas fa-arrow-left"></i> Go Back
-        </button>
+            <div class="logo-box">
+                <i class="fas fa-hotel"></i>
+            </div>
+
+            <h1
+                style="font-size: 48px; font-weight: 800; letter-spacing: -1.5px; margin-bottom: 16px; color: var(--text-primary);">
+                Ocean View <span style="color: var(--primary-color);">Resort</span>
+            </h1>
+
+            <p
+                style="color: var(--text-secondary); font-size: 18px; line-height: 1.6; margin-bottom: 40px; max-width: 450px; margin-left: auto; margin-right: auto;">
+                Welcome to the official internal management system. Streamline your operations with our premium suite.
+            </p>
+
+            <div style="display: flex; gap: 16px; justify-content: center;">
+                <a href="login.html" class="btn btn-primary"
+                    style="padding: 16px 32px; font-size: 16px; border-radius: 12px;">
+                    <i class="fas fa-sign-in-alt"></i> Staff Portal
+                </a>
+            </div>
+
+            <div
+                style="margin-top: 56px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; border-top: 1px solid var(--glass-border); padding-top: 40px;">
+                <div>
+                    <i class="fas fa-shield-alt"
+                        style="color: var(--primary-color); font-size: 20px; margin-bottom: 12px; display: block;"></i>
+                    <span
+                        style="font-size: 12px; font-weight: 700; color: var(--text-primary); text-transform: uppercase;">Secure</span>
+                </div>
+                <div>
+                    <i class="fas fa-bolt"
+                        style="color: var(--accent-color); font-size: 20px; margin-bottom: 12px; display: block;"></i>
+                    <span
+                        style="font-size: 12px; font-weight: 700; color: var(--text-primary); text-transform: uppercase;">Efficient</span>
+                </div>
+                <div>
+                    <i class="fas fa-sync-alt"
+                        style="color: var(--success); font-size: 20px; margin-bottom: 12px; display: block;"></i>
+                    <span
+                        style="font-size: 12px; font-weight: 700; color: var(--text-primary); text-transform: uppercase;">Real-time</span>
+                </div>
+            </div>
+        </div>
     </div>
-
-    <script src="JS/management.js"></script>
 </body>
+
 </html>
