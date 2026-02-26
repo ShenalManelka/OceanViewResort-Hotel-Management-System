@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS rooms (
     room_number VARCHAR(20) NOT NULL UNIQUE,
     type ENUM('Single', 'Double', 'Suite') NOT NULL,
     price DECIMAL(10, 2) NOT NULL,
-    status ENUM('Available', 'Occupied', 'Maintenance') DEFAULT 'Available',
+    status ENUM('Available', 'Occupied', 'Maintenance', 'Cleaning') DEFAULT 'Available',
     description TEXT
 );
 
@@ -50,9 +50,6 @@ CREATE TABLE IF NOT EXISTS payments (
     payment_id INT AUTO_INCREMENT PRIMARY KEY,
     booking_id INT NOT NULL,
     payment_method ENUM('Cash', 'Card', 'Online') DEFAULT 'Cash',
-    amount DECIMAL(10, 2) NOT NULL,
-    tax_amount DECIMAL(10, 2) DEFAULT 0.00,
-    discount_amount DECIMAL(10, 2) DEFAULT 0.00,
     payment_status VARCHAR(50) DEFAULT 'Paid',
     payment_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (booking_id) REFERENCES bookings(booking_id) ON DELETE CASCADE
