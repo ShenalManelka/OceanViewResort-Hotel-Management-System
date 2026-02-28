@@ -8,9 +8,44 @@
     <link rel="stylesheet" href="CSS/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #4361ee, #4cc9f0);
+            --bg-gradient: radial-gradient(circle at top right, #f8f9ff 0%, #e0e7ff 100%);
+            --glass-bg: rgba(255, 255, 255, 0.9);
+            --card-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg-gradient);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .auth-wrapper {
+            width: 100%;
+            max-width: 420px;
+            padding: 20px;
+        }
+
         .auth-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid rgba(255, 255, 255, 0.8);
             position: relative;
             overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        .auth-card:hover {
+            transform: translateY(-5px);
         }
 
         .auth-card::before {
@@ -19,8 +54,48 @@
             top: 0;
             left: 0;
             width: 100%;
-            height: 4px;
-            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+            height: 6px;
+            background: var(--primary-gradient);
+        }
+
+        /* Logo Area */
+        .logo-container {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .brand-logo {
+            width: 70px;
+            height: 70px;
+            object-fit: contain;
+            margin-bottom: 16px;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
+        }
+
+        .login-illustration {
+            width: 64px;
+            height: 64px;
+            background: rgba(67, 97, 238, 0.1);
+            color: #4361ee;
+            border-radius: 18px;
+            display: grid;
+            place-items: center;
+            font-size: 28px;
+            margin: 0 auto 16px;
+        }
+
+        /* Form Styling */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #4b5563;
+            margin-bottom: 8px;
+            margin-left: 4px;
         }
 
         .input-group {
@@ -32,46 +107,103 @@
         .input-group i {
             position: absolute;
             left: 16px;
-            color: var(--text-secondary);
+            color: #9ca3af;
+            font-size: 16px;
+            transition: color 0.3s ease;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 14px 16px 14px 48px;
+            border-radius: 12px;
+            border: 2px solid #f3f4f6;
+            background: #f9fafb;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            outline: none;
+            box-sizing: border-box;
+        }
+
+        .form-input:focus {
+            border-color: #4361ee;
+            background: #fff;
+            box-shadow: 0 0 0 4px rgba(67, 97, 238, 0.1);
+        }
+
+        .form-input:focus + i {
+            color: #4361ee;
+        }
+
+        /* Button Styling */
+        .btn-primary {
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 15px -3px rgba(67, 97, 238, 0.3);
+            margin-top: 24px;
+        }
+
+        .btn-primary:hover {
+            opacity: 0.9;
+            transform: scale(1.01);
+            box-shadow: 0 12px 20px -3px rgba(67, 97, 238, 0.4);
+        }
+
+        .btn-primary:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        #errorMsg {
+            background: #fff5f5;
+            color: #e53e3e;
+            padding: 12px;
+            border-radius: 10px;
+            margin-top: 20px;
+            text-align: center;
             font-size: 14px;
-            transition: var(--transition);
+            font-weight: 500;
+            display: none;
+            border: 1px solid #feb2b2;
+            animation: shake 0.4s ease-in-out;
         }
 
-        .input-group .form-input {
-            padding-left: 44px;
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
         }
 
-        .input-group .form-input:focus+i {
-            color: var(--primary-color);
-        }
-
-        .login-illustration {
-            width: 80px;
-            height: 80px;
-            background: rgba(67, 97, 238, 0.1);
-            color: var(--primary-color);
-            border-radius: 20px;
-            display: grid;
-            place-items: center;
-            font-size: 32px;
-            margin: 0 auto 24px;
-            box-shadow: var(--shadow-sm);
+        .footer-text {
+            margin-top: 32px;
+            text-align: center;
+            border-top: 1px solid #f3f4f6;
+            padding-top: 20px;
+            font-size: 12px;
+            color: #9ca3af;
+            letter-spacing: 0.5px;
         }
     </style>
 </head>
 
 <body>
     <div class="auth-wrapper">
-        <div class="auth-card glass">
-            <div class="login-illustration">
-                <i class="fas fa-user-lock"></i>
-            </div>
-
-            <div style="text-align: center; margin-bottom: 32px;">
-                <h2 style="color: var(--text-primary); font-size: 24px; margin-bottom: 8px; font-weight: 800;">Staff
-                    Portal</h2>
-                <p style="color: var(--text-secondary); font-size: 14px; font-weight: 500;">Secure login for Ocean View
-                    Resort management</p>
+        <div class="auth-card">
+            <div class="logo-container">
+                <img src="assests/OVRLogo.png" alt="Ocean View Logo" class="brand-logo">
+                <h2 style="color: #1f2937; font-size: 26px; margin: 0 0 6px; font-weight: 800;">Staff Portal</h2>
+                <p style="color: #6b7280; font-size: 14px; margin: 0; font-weight: 500;">Ocean View Resort & Spa Management</p>
             </div>
 
             <form id="loginForm">
@@ -89,30 +221,26 @@
                     <div class="input-group">
                         <input type="password" id="password" name="password" class="form-input" placeholder="••••••••"
                             required>
-                        <i class="fas fa-key"></i>
+                        <i class="fas fa-lock"></i>
                     </div>
                 </div>
 
-                <button type="submit" id="submitBtn" class="btn btn-primary"
-                    style="width: 100%; margin-top: 12px; height: 48px;">
+                <button type="submit" id="submitBtn" class="btn-primary">
                     <span>Sign In</span>
-                    <i class="fas fa-arrow-right" style="font-size: 12px; margin-left: 8px;"></i>
+                    <i class="fas fa-arrow-right" style="font-size: 14px; margin-left: 10px;"></i>
                 </button>
 
-                <div id="errorMsg"
-                    style="background: rgba(239, 71, 111, 0.1); color: var(--error); padding: 12px; border-radius: 8px; margin-top: 20px; text-align: center; font-size: 13px; font-weight: 600; display: none; border: 1px solid rgba(239, 71, 111, 0.2);">
-                </div>
+                <div id="errorMsg"></div>
             </form>
 
-            <div
-                style="margin-top: 32px; text-align: center; border-top: 1px solid var(--glass-border); padding-top: 24px;">
-                <p style="font-size: 12px; color: var(--text-secondary); font-weight: 500;">&copy; 2026 Ocean View
-                    Resort & Spa</p>
+            <div class="footer-text">
+                &copy; 2026 Ocean View Resort & Spa • Internal Access Only
             </div>
         </div>
     </div>
 
     <script>
+        // No changes made to your logic - purely UI/UX enhancements above
         document.getElementById('loginForm').addEventListener('submit', function (e) {
             e.preventDefault();
             const form = this;
@@ -166,10 +294,9 @@
 
             function resetBtn() {
                 submitBtn.disabled = false;
-                submitBtn.innerHTML = '<span>Sign In</span><i class="fas fa-arrow-right" style="font-size: 12px; margin-left: 8px;"></i>';
+                submitBtn.innerHTML = '<span>Sign In</span><i class="fas fa-arrow-right" style="font-size: 14px; margin-left: 10px;"></i>';
             }
         });
     </script>
 </body>
-
 </html>

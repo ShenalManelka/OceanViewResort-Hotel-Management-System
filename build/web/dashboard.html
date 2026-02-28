@@ -23,6 +23,8 @@
                 <a href="#" class="nav-item" onclick="showSection('rooms')"><i class="fas fa-bed"></i> Rooms</a>
                 <a href="#" class="nav-item" onclick="showSection('bookings')"><i class="fas fa-calendar-check"></i>
                     Bookings</a>
+                <a href="#" class="nav-item" onclick="showSection('help')"><i class="fas fa-question-circle"></i>
+                    Help</a>
                 <a href="#" class="nav-item" style="margin-top: auto; color: var(--error);" onclick="handleLogout()"><i
                         class="fas fa-sign-out-alt"></i> Logout</a>
             </nav>
@@ -111,6 +113,30 @@
                             <!-- JS will populate this -->
                         </tbody>
                     </table>
+                </div>
+            </section>
+
+            <!-- Help Section -->
+            <section id="help-section" style="display: none;">
+                <div style="margin-bottom: 25px;">
+                    <h3>System Guidelines (Admin)</h3>
+                    <p style="color: var(--text-secondary);">Welcome to the Ocean View Resort Reservation System. Here
+                        is a quick guide on how to use the dashboard features.</p>
+                </div>
+                <div class="glass" style="padding: 30px;">
+                    <h4 style="color: var(--primary-color); margin-bottom: 10px;"><i class="fas fa-chart-line"></i>
+                        Overview</h4>
+                    <p style="margin-bottom: 20px; color: var(--text-primary);">High-level metrics on room availability,
+                        occupancy, and total revenue across the resort.</p>
+
+                    <h4 style="color: var(--primary-color); margin-bottom: 10px;"><i class="fas fa-bed"></i> Rooms</h4>
+                    <p style="margin-bottom: 20px; color: var(--text-primary);">Add new rooms, edit room details (price,
+                        type), change room statuses globally, and remove rooms from the system.</p>
+
+                    <h4 style="color: var(--primary-color); margin-bottom: 10px;"><i class="fas fa-calendar-check"></i>
+                        Bookings</h4>
+                    <p style="margin-bottom: 20px; color: var(--text-primary);">View all reservations, manually adjust
+                        booking statuses as needed, and cancel bookings if necessary.</p>
                 </div>
             </section>
         </main>

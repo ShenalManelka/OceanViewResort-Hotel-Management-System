@@ -39,6 +39,9 @@
                 <a href="#" class="nav-item" onclick="showSection('billing')">
                     <i class="fas fa-file-invoice"></i> Payments
                 </a>
+                <a href="#" class="nav-item" onclick="showSection('help')">
+                    <i class="fas fa-question-circle"></i> Help
+                </a>
                 <div
                     style="margin-top: 40px; padding: 0 12px; border-top: 1px solid var(--glass-border); padding-top: 24px;">
                     <a href="#" class="nav-item" style="color: var(--error);" onclick="handleLogout()">
@@ -284,6 +287,38 @@
                             </button>
                         </div>
                     </div>
+                </div>
+            </section>
+
+            <!-- Help Section -->
+            <section id="help-section" style="display: none;">
+                <div style="margin-bottom: 25px;">
+                    <h3>System Guidelines (Receptionist)</h3>
+                    <p style="color: var(--text-secondary);">Welcome to the Ocean View Resort Reservation System. Here
+                        is a quick guide on how to use the dashboard features.</p>
+                </div>
+                <div class="glass" style="padding: 30px;">
+                    <h4 style="color: var(--primary-color); margin-bottom: 10px;"><i class="fas fa-th-large"></i>
+                        Overview</h4>
+                    <p style="margin-bottom: 20px; color: var(--text-primary);">The Overview section provides real-time
+                        statistics on available rooms and today's check-ins.</p>
+
+                    <h4 style="color: var(--primary-color); margin-bottom: 10px;"><i class="fas fa-key"></i> Room View
+                    </h4>
+                    <p style="margin-bottom: 20px; color: var(--text-primary);">Use this section to check room statuses,
+                        filter by room type or availability, and update the status of a room to Available or Occupied.
+                    </p>
+
+                    <h4 style="color: var(--primary-color); margin-bottom: 10px;"><i class="fas fa-user-check"></i>
+                        Check-ins</h4>
+                    <p style="margin-bottom: 20px; color: var(--text-primary);">Manage guest check-ins and reservations
+                        here. You can register new guests, initiate check-ins, and update the booking status (e.g., from
+                        Confirmed to Checked-in, and then to Completed).</p>
+
+                    <h4 style="color: var(--primary-color); margin-bottom: 10px;"><i class="fas fa-file-invoice"></i>
+                        Payments</h4>
+                    <p style="margin-bottom: 20px; color: var(--text-primary);">Search for a booking by its ID to
+                        process final payments, apply any necessary discounts, and view/print the guest bill.</p>
                 </div>
             </section>
         </main>
