@@ -293,32 +293,68 @@
             <!-- Help Section -->
             <section id="help-section" style="display: none;">
                 <div style="margin-bottom: 25px;">
-                    <h3>System Guidelines (Receptionist)</h3>
+                    <h3>🧑‍💻 RECEPTIONIST DASHBOARD – USER GUIDE</h3>
                     <p style="color: var(--text-secondary);">Welcome to the Ocean View Resort Reservation System. Here
-                        is a quick guide on how to use the dashboard features.</p>
+                        are the dashboard user guidelines.</p>
                 </div>
-                <div class="glass" style="padding: 30px;">
-                    <h4 style="color: var(--primary-color); margin-bottom: 10px;"><i class="fas fa-th-large"></i>
-                        Overview</h4>
-                    <p style="margin-bottom: 20px; color: var(--text-primary);">The Overview section provides real-time
-                        statistics on available rooms and today's check-ins.</p>
+                <div class="glass" style="padding: 30px; line-height: 1.6;">
+                    <h4 style="color: var(--primary-color); margin-bottom: 10px;">🎯 Overview</h4>
+                    <p style="margin-bottom: 20px; color: var(--text-primary);">The Receptionist Dashboard focuses on
+                        daily front-desk operations including reservations, guest check-ins, and payments.</p>
 
-                    <h4 style="color: var(--primary-color); margin-bottom: 10px;"><i class="fas fa-key"></i> Room View
+                    <h4 style="color: var(--primary-color); margin-bottom: 15px;">1️⃣ Dashboard Home</h4>
+                    <ul style="list-style: none; padding-left: 0; margin-bottom: 20px; color: var(--text-primary);">
+                        <li>Displays: Available Rooms, Check-ins Today, Ready for Guests status.</li>
+                        <li><strong>📌 Purpose:</strong> Quick operational overview.</li>
+                    </ul>
+
+                    <h4 style="color: var(--primary-color); margin-bottom: 15px;">2️⃣ Room Monitoring</h4>
+                    <div style="margin-bottom: 20px; color: var(--text-primary); padding-left: 10px;">
+                        <p><strong>Receptionists can:</strong></p>
+                        <ul>
+                            <li>View room availability and status (Available, Occupied, Maintenance)</li>
+                            <li>Search by Room # and filter by Type</li>
+                            <li>Update status to Available or Occupied (Cannot edit Maintenance rooms)</li>
+                        </ul>
+                    </div>
+
+                    <h4 style="color: var(--primary-color); margin-bottom: 15px;">3️⃣ Booking Management (Check-ins)
                     </h4>
-                    <p style="margin-bottom: 20px; color: var(--text-primary);">Use this section to check room statuses,
-                        filter by room type or availability, and update the status of a room to Available or Occupied.
-                    </p>
+                    <div style="margin-bottom: 20px; color: var(--text-primary); padding-left: 10px;">
+                        <strong>➤ Create New Check-in</strong>
+                        <ul style="margin-bottom: 10px;">
+                            <li>Click New Check-in -> Select or Add Guest -> Choose Room -> Enter dates -> Save</li>
+                        </ul>
+                        <strong>➤ Manage Check-ins</strong>
+                        <ul style="margin-bottom: 10px;">
+                            <li>Update status: Confirmed → Checked-in → Completed</li>
+                            <li>Cancel check-ins if necessary</li>
+                        </ul>
+                    </div>
 
-                    <h4 style="color: var(--primary-color); margin-bottom: 10px;"><i class="fas fa-user-check"></i>
-                        Check-ins</h4>
-                    <p style="margin-bottom: 20px; color: var(--text-primary);">Manage guest check-ins and reservations
-                        here. You can register new guests, initiate check-ins, and update the booking status (e.g., from
-                        Confirmed to Checked-in, and then to Completed).</p>
+                    <h4 style="color: var(--primary-color); margin-bottom: 15px;">4️⃣ Payment Processing</h4>
+                    <div style="margin-bottom: 20px; color: var(--text-primary); padding-left: 10px;">
+                        <strong>➤ Record Payment</strong>
+                        <ul style="margin-bottom: 10px;">
+                            <li>Search booking by ID</li>
+                            <li>Review bill, apply discounts, select Payment Method (Cash, Card, Online)</li>
+                            <li>Click Finalize & Print</li>
+                        </ul>
+                        <p><em>⚠ Always confirm payment amount before submission.</em></p>
+                    </div>
 
-                    <h4 style="color: var(--primary-color); margin-bottom: 10px;"><i class="fas fa-file-invoice"></i>
-                        Payments</h4>
-                    <p style="margin-bottom: 20px; color: var(--text-primary);">Search for a booking by its ID to
-                        process final payments, apply any necessary discounts, and view/print the guest bill.</p>
+                    <h4 style="color: var(--primary-color); margin-bottom: 15px;">🚫 Receptionist Restrictions</h4>
+                    <ul style="list-style: none; padding-left: 0; margin-bottom: 20px; color: var(--text-primary);">
+                        <li>Receptionists cannot: Add or delete rooms, configure pricing, view revenue analytics, or
+                            manage staff (if implemented).</li>
+                    </ul>
+
+                    <h4 style="color: var(--primary-color); margin-bottom: 15px;">🧾 DAILY WORKFLOW & SECURITY</h4>
+                    <ul style="list-style: none; padding-left: 0; color: var(--text-primary);">
+                        <li>✔ Check available rooms & create bookings</li>
+                        <li>✔ Check-in guests & process payments to complete booking</li>
+                        <li>✔ Always log out after shift & report errors immediately</li>
+                    </ul>
                 </div>
             </section>
         </main>
