@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function showSection(sectionId) {
-    const sections = ['overview', 'rooms', 'bookings', 'billing'];
+    const sections = ['overview', 'rooms', 'bookings', 'billing', 'help'];
     sections.forEach(s => {
         const el = document.getElementById(`${s}-section`);
         if (el) el.style.display = s === sectionId ? 'block' : 'none';
@@ -39,7 +39,8 @@ function showSection(sectionId) {
         'overview': 'Reception Overview',
         'rooms': 'Room Availability',
         'bookings': 'Check-ins',
-        'billing': 'Guest Payments'
+        'billing': 'Guest Payments',
+        'help': 'System Guidelines'
     };
     const pageTitle = document.getElementById('page-title');
     if (pageTitle) pageTitle.innerText = titles[sectionId] || 'Reception';

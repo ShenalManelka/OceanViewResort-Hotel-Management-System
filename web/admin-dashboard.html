@@ -42,6 +42,9 @@
                 <a href="#" class="nav-item" onclick="showSection('reports')">
                     <i class="fas fa-analytics"></i> Reports
                 </a>
+                <a href="#" class="nav-item" onclick="showSection('help')">
+                    <i class="fas fa-question-circle"></i> Help
+                </a>
                 <div
                     style="margin-top: 40px; padding: 0 12px; border-top: 1px solid var(--glass-border); padding-top: 24px;">
                     <a href="#" class="nav-item" style="color: var(--error);" onclick="handleLogout()">
@@ -104,7 +107,8 @@
                     </div>
                     <div class="stat-card glass">
                         <div class="stat-icon" style="background: rgba(76, 201, 240, 0.1); color: var(--accent-color);">
-                            <i class="fas fa-wallet"></i></div>
+                            <i class="fas fa-wallet"></i>
+                        </div>
                         <span class="stat-label">Total Revenue</span>
                         <span class="stat-value" id="total-revenue">Rs. 0.00</span>
                     </div>
@@ -220,6 +224,40 @@
                             <!-- JS will populate -->
                         </tbody>
                     </table>
+                </div>
+            </section>
+
+            <!-- Help Section -->
+            <section id="help-section" style="display: none;">
+                <div style="margin-bottom: 25px;">
+                    <h3>System Guidelines (Admin)</h3>
+                    <p style="color: var(--text-secondary);">Welcome to the Ocean View Resort Reservation System. Here
+                        is a quick guide on how to use the dashboard features.</p>
+                </div>
+                <div class="glass" style="padding: 30px;">
+                    <h4 style="color: var(--primary-color); margin-bottom: 10px;"><i class="fas fa-th-large"></i>
+                        Overview</h4>
+                    <p style="margin-bottom: 20px; color: var(--text-primary);">High-level metrics on room availability,
+                        occupancy, and total revenue across the resort.</p>
+
+                    <h4 style="color: var(--primary-color); margin-bottom: 10px;"><i class="fas fa-bed"></i> Rooms</h4>
+                    <p style="margin-bottom: 20px; color: var(--text-primary);">Add new rooms, edit room details (price,
+                        type), change room statuses globally, and remove rooms from the system.</p>
+
+                    <h4 style="color: var(--primary-color); margin-bottom: 10px;"><i class="fas fa-calendar-alt"></i>
+                        Bookings</h4>
+                    <p style="margin-bottom: 20px; color: var(--text-primary);">View all reservations, manually adjust
+                        booking statuses as needed, and cancel bookings if necessary.</p>
+
+                    <h4 style="color: var(--primary-color); margin-bottom: 10px;"><i class="fas fa-credit-card"></i>
+                        Payments</h4>
+                    <p style="margin-bottom: 20px; color: var(--text-primary);">Review all payment history across the
+                        resort, including dates, amounts, and payment methods.</p>
+
+                    <h4 style="color: var(--primary-color); margin-bottom: 10px;"><i class="fas fa-analytics"></i>
+                        Reports</h4>
+                    <p style="margin-bottom: 20px; color: var(--text-primary);">View analytic data such as cancellation
+                        rates and monthly revenue performance to track business goals.</p>
                 </div>
             </section>
         </main>
