@@ -6,7 +6,6 @@ import util.DBConnection;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import util.EmailService;
 
 public class BookingDAO {
 
@@ -123,18 +122,6 @@ public class BookingDAO {
                         }
                     }
                     conn.commit();
-
-                    // Trigger email notification if status changed to Checked-in
-                    if ("Checked-in".equalsIgnoreCase(status)) {
-                        Booking checkedInBooking = getBookingById(bookingId);
-                        if (checkedInBooking != null && checkedInBooking.getGuestEmail() != null) {
-                            EmailService.sendCheckInEmail(
-                                    checkedInBooking.getGuestEmail(),
-                                    checkedInBooking.getGuestName(),
-                                    checkedInBooking.getRoomNumber(),
-                                    checkedInBooking.getCheckOut().toString());
-                        }
-                    }
 
                     return true;
                 }
