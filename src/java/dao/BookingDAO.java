@@ -255,4 +255,34 @@ public class BookingDAO {
         }
         return null;
     }
+
+    // ✅ Count bookings by a specific status
+    public int getBookingCountByStatus(String status) {
+        String query = "SELECT COUNT(*) FROM bookings WHERE status = ?";
+        try (Connection conn = DBConnection.getInstance().getConnection();
+                PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setString(1, status);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next())
+                    return rs.getInt(1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    // ✅ Total number of unique guests (users who have booked)
+    public int getTotalGuestCount() {
+        String query = "SELECT COUNT(DISTINCT user_id) FROM bookings";
+        try (Connection conn = DBConnection.getInstance().getConnection();
+                Statement stmt = conn.createStatement();
+                ResultSet rs = stmt.executeQuery(query)) {
+            if (rs.next())
+                return rs.getInt(1);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
 }

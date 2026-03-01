@@ -40,7 +40,7 @@
                     <i class="fas fa-credit-card"></i> Payments
                 </a>
                 <a href="#" class="nav-item" onclick="showSection('reports')">
-                    <i class="fas fa-analytics"></i> Reports
+                    <i class="fas fa-chart-line"></i> Reports
                 </a>
                 <a href="#" class="nav-item" onclick="showSection('staff')">
                     <i class="fas fa-user-cog"></i> Staff Management
@@ -181,30 +181,61 @@
 
             <!-- Reports Section -->
             <section id="reports-section" style="display: none;">
+
+                <!-- Top KPI Cards -->
                 <div class="stats-grid" style="margin-bottom: 30px;">
                     <div class="stat-card glass">
+                        <div class="stat-icon" style="background: rgba(67,97,238,0.1); color: var(--primary-color);"><i
+                                class="fas fa-wallet"></i></div>
+                        <span class="stat-label">Total Revenue</span>
+                        <span class="stat-value" id="rpt-revenue" style="color: var(--primary-color);">Rs. 0.00</span>
+                    </div>
+                    <div class="stat-card glass">
+                        <div class="stat-icon" style="background: rgba(6,214,160,0.1); color: var(--success);"><i
+                                class="fas fa-check-double"></i></div>
+                        <span class="stat-label">Completed Bookings</span>
+                        <span class="stat-value" id="rpt-completed" style="color: var(--success);">0</span>
+                    </div>
+                    <div class="stat-card glass">
+                        <div class="stat-icon" style="background: rgba(239,71,111,0.1); color: var(--error);"><i
+                                class="fas fa-ban"></i></div>
                         <span class="stat-label">Cancellation Rate</span>
-                        <span class="stat-value" id="cancellation-rate">0%</span>
-                        <span style="font-size: 11px; color: var(--text-secondary);" id="cancellation-count">0 of 0
+                        <span class="stat-value" id="rpt-cancel-rate" style="color: var(--error);">0%</span>
+                        <span style="font-size: 11px; color: var(--text-secondary);" id="rpt-cancel-count">0 of 0
                             bookings</span>
                     </div>
                     <div class="stat-card glass">
-                        <span class="stat-label">Best Performing Month</span>
-                        <span class="stat-value" id="best-month">-</span>
+                        <div class="stat-icon" style="background: rgba(255,209,102,0.1); color: var(--warning);"><i
+                                class="fas fa-users"></i></div>
+                        <span class="stat-label">Total Guests Served</span>
+                        <span class="stat-value" id="rpt-guests" style="color: var(--warning);">0</span>
+                    </div>
+                    <div class="stat-card glass">
+                        <div class="stat-icon" style="background: rgba(76,201,240,0.1); color: var(--accent-color);"><i
+                                class="fas fa-trophy"></i></div>
+                        <span class="stat-label">Best Month</span>
+                        <span class="stat-value" id="rpt-best-month" style="font-size: 18px;">-</span>
                     </div>
                 </div>
 
+                <!-- Booking Status Breakdown -->
                 <div class="glass" style="padding: 30px; margin-bottom: 30px;">
+                    <h3 style="margin-bottom: 24px;">📊 Booking Status Breakdown</h3>
+                    <div id="booking-status-chart" style="display: flex; flex-direction: column; gap: 16px;"></div>
+                </div>
+
+                <!-- Monthly Revenue Chart -->
+                <div class="glass" style="padding: 30px;">
                     <div
-                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                        <h3>Monthly Revenue</h3>
-                        <div style="color: var(--primary-color); font-weight: 600;">Year 2026</div>
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                        <h3>📈 Monthly Revenue Chart</h3>
+                        <div style="color: var(--primary-color); font-weight: 600; font-size: 13px;">Year 2026</div>
                     </div>
                     <div id="revenue-chart"
-                        style="display: flex; align-items: flex-end; gap: 20px; height: 200px; padding-top: 20px;">
-                        <!-- Chart bars will be injected here -->
+                        style="display: flex; align-items: flex-end; gap: 16px; height: 220px; padding-top: 20px;">
                     </div>
                 </div>
+
             </section>
             <!-- Payments Section -->
             <section id="bills-section" style="display: none;">

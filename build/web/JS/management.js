@@ -256,26 +256,67 @@ async function deleteBooking(id) {
 // --- Reports Logic ---
 async function loadReports() {
     try {
-        // Fetch Revenue Data
+        // ── Fetch stats (booking counts, guests, revenue) ──────────────
+        const statsResp = await fetch('admin/stats');
+        const stats = await statsResp.json();
+
+        // KPI cards
+        const setEl = (id, val) => { const e = document.getElementById(id); if (e) e.innerText = val; };
+        setEl('rpt-revenue', formatPrice(stats.totalRevenue || 0));
+        setEl('rpt-completed', stats.completedBookings || 0);
+        setEl('rpt-guests', stats.totalGuests || 0);
+
+        // ── Fetch cancellation stats ───────────────────────────────────
+        const cancelResp = await fetch('admin/bookings?report=cancellation');
+        const cancel = await cancelResp.json();
+        const cancelRate = cancel.total > 0 ? (cancel.cancelled / cancel.total * 100).toFixed(1) : '0.0';
+        setEl('rpt-cancel-rate', `${cancelRate}%`);
+        setEl('rpt-cancel-count', `${cancel.cancelled} of ${cancel.total} bookings`);
+
+        // ── Booking Status Breakdown chart (horizontal bars) ──────────
+        const statusData = [
+            { label: 'Confirmed', count: stats.confirmedBookings || 0, color: 'var(--primary-color)' },
+            { label: 'Checked-in', count: stats.checkedInBookings || 0, color: 'var(--warning)' },
+            { label: 'Completed', count: stats.completedBookings || 0, color: 'var(--success)' },
+            { label: 'Cancelled', count: stats.cancelledBookings || 0, color: 'var(--error)' },
+        ];
+        const totalBookings = statusData.reduce((s, d) => s + d.count, 0) || 1;
+        const statusChart = document.getElementById('booking-status-chart');
+        if (statusChart) {
+            statusChart.innerHTML = statusData.map(d => {
+                const pct = ((d.count / totalBookings) * 100).toFixed(1);
+                return `
+                <div>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                        <span style="font-size:13px; font-weight:600; color:${d.color};">${d.label}</span>
+                        <span style="font-size:13px; color:var(--text-secondary);">${d.count} bookings &nbsp;(${pct}%)</span>
+                    </div>
+                    <div style="background:#f1f3f9; border-radius:8px; height:14px; overflow:hidden;">
+                        <div style="width:${pct}%; height:100%; background:${d.color}; border-radius:8px;
+                             transition:width 0.8s ease; min-width:${d.count > 0 ? '4px' : '0'};"></div>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        // ── Monthly Revenue Chart ──────────────────────────────────────
         const revResp = await fetch('admin/bookings?report=revenue');
         const revenueData = await revResp.json();
         renderRevenueChart(revenueData);
 
-        // Fetch Cancellation Data
-        const cancelResp = await fetch('admin/bookings?report=cancellation');
-        const cancelData = await cancelResp.json();
-        document.getElementById('cancellation-rate').innerText = `${cancelData.rate.toFixed(1)}%`;
-        document.getElementById('cancellation-count').innerText = `${cancelData.cancelled} of ${cancelData.total} bookings`;
-
         // Best Month
         if (revenueData.length > 0) {
             const best = [...revenueData].sort((a, b) => b.revenue - a.revenue)[0];
-            document.getElementById('best-month').innerText = `${best.month} (${formatPrice(best.revenue)})`;
+            setEl('rpt-best-month', `${best.month}`);
+        } else {
+            setEl('rpt-best-month', '-');
         }
+
     } catch (err) {
         console.error('Error loading reports:', err);
     }
 }
+
 
 function renderRevenueChart(data) {
     const container = document.getElementById('revenue-chart');
@@ -293,7 +334,7 @@ function renderRevenueChart(data) {
         const dispRev = d.revenue > 1000 ? (d.revenue / 1000).toFixed(1) + 'k' : d.revenue;
         return `
             <div style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 10px;">
-                <div style="font-size: 10px; color: var(--primary-color); font-weight: 600;">Rs. ${dispRev}k</div>
+                <div style="font-size: 10px; color: var(--primary-color); font-weight: 600;">Rs. ${dispRev}</div>
                 <div style="width: 100%; background: var(--primary-color); height: ${height}px; border-radius: 4px 4px 0 0; min-height: 2px; transition: height 0.5s ease;"></div>
                 <div style="font-size: 11px; color: var(--text-secondary); white-space: nowrap;">${d.month.substring(0, 3)}</div>
             </div>
