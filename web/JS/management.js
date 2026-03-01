@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // --- Navigation Logic ---
 function showSection(sectionId) {
-    const sections = ['overview', 'rooms', 'bookings', 'reports', 'bills', 'help'];
+    const sections = ['overview', 'rooms', 'bookings', 'reports', 'bills', 'help', 'staff'];
     sections.forEach(s => {
         const el = document.getElementById(`${s}-section`);
         if (el) el.style.display = (s === sectionId) ? 'block' : 'none';
@@ -35,7 +35,8 @@ function showSection(sectionId) {
         'bookings': 'Reservations',
         'reports': 'Business Reports',
         'bills': 'Payment History',
-        'help': 'System Guidelines'
+        'help': 'System Guidelines',
+        'staff': 'Staff Management'
     };
     const pageTitle = document.getElementById('page-title');
     if (pageTitle) pageTitle.innerText = titles[sectionId] || 'Dashboard';
@@ -45,6 +46,7 @@ function showSection(sectionId) {
     if (sectionId === 'bookings') loadBookings();
     if (sectionId === 'reports') loadReports();
     if (sectionId === 'bills') loadBills();
+    if (sectionId === 'staff') loadStaff();
 }
 
 // --- Data Loading ---

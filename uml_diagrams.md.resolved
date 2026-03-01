@@ -1,0 +1,481 @@
+# OceanView Resort — UML Diagrams
+
+> All diagrams are derived directly from the project source code (`src/java/model`, `dao`, `servlet`) and `schema.sql`.
+
+---
+
+## 1. Class Diagram
+
+Shows all classes, their fields, methods, and relationships.
+
+```mermaid
+classDiagram
+    direction TB
+
+    %% ─── MODEL LAYER ───────────────────────────────────────
+    class User {
+        -int userId
+        -String firstName
+        -String lastName
+        -String email
+        -String password
+        -String phone
+        -String address
+        -String nicPassport
+        +getUserId() int
+        +getFirstName() String
+        +getLastName() String
+        +getEmail() String
+        +getPhone() String
+        +getAddress() String
+        +getNicPassport() String
+    }
+
+    class Staff {
+        -int id
+        -String username
+        -String fullName
+        -String email
+        -String role
+        +getId() int
+        +getUsername() String
+        +getFullName() String
+        +getEmail() String
+        +getRole() String
+    }
+
+    class Room {
+        -int roomId
+        -String roomNumber
+        -String type
+        -double price
+        -String status
+        -String description
+        +getRoomId() int
+        +getRoomNumber() String
+        +getType() String
+        +getPrice() double
+        +getStatus() String
+    }
+
+    class Booking {
+        -int bookingId
+        -int guestId
+        -int roomId
+        -Date checkIn
+        -Date checkOut
+        -double totalPrice
+        -String status
+        -String guestName
+        -String guestEmail
+        -String roomNumber
+        +getBookingId() int
+        +getGuestId() int
+        +getRoomId() int
+        +getCheckIn() Date
+        +getCheckOut() Date
+        +getTotalPrice() double
+        +getStatus() String
+    }
+
+    class Payment {
+        -int paymentId
+        -int bookingId
+        -String paymentMethod
+        -double amount
+        -String paymentStatus
+        -Timestamp paymentDate
+        +getPaymentId() int
+        +getBookingId() int
+        +getPaymentMethod() String
+        +getAmount() double
+        +getPaymentStatus() String
+        +getPaymentDate() Timestamp
+    }
+
+    %% ─── DAO LAYER ──────────────────────────────────────────
+    class DBConnection {
+        -static DBConnection instance
+        -Connection connection
+        +getInstance() DBConnection
+        +getConnection() Connection
+    }
+
+    class StaffDAO {
+        +authenticate(email, password) Staff
+        +getAllStaff() List~Staff~
+        +addStaff(Staff) boolean
+        +deleteStaff(id) boolean
+    }
+
+    class UserDAO {
+        +addUser(User) boolean
+        +getAllUsers() List~User~
+        +getUserById(id) User
+    }
+
+    class RoomDAO {
+        +getAllRooms() List~Room~
+        +searchRooms(number, type, status) List~Room~
+        +getRoomById(id) Room
+        +addRoom(Room) boolean
+        +updateRoom(Room) boolean
+        +deleteRoom(id) boolean
+        +getRoomCount() int
+        +getCountByStatus(status) int
+    }
+
+    class BookingDAO {
+        +getAllBookings() List~Booking~
+        +addBooking(Booking) boolean
+        +updateBookingStatus(id, status) boolean
+        +deleteBooking(id) boolean
+        +getBookingById(id) Booking
+        +getActiveBookingCount() int
+        +getTotalRevenue() double
+        +getMonthlyRevenue() List~JSONObject~
+        +getCancellationStats() JSONObject
+    }
+
+    class PaymentDAO {
+        +addPayment(Payment) boolean
+        +getAllPayments() List~Payment~
+        +getPaymentByBookingId(id) Payment
+    }
+
+    %% ─── SERVLET LAYER ──────────────────────────────────────
+    class LoginServlet {
+        -StaffDAO staffDAO
+        +doGet(req, res) void
+        +doPost(req, res) void
+    }
+
+    class RoomServlet {
+        -RoomDAO roomDAO
+        +doGet(req, res) void
+        +doPost(req, res) void
+    }
+
+    class BookingServlet {
+        -BookingDAO bookingDAO
+        +doGet(req, res) void
+        +doPost(req, res) void
+    }
+
+    class PaymentServlet {
+        -PaymentDAO paymentDAO
+        -BookingDAO bookingDAO
+        +doGet(req, res) void
+        +doPost(req, res) void
+    }
+
+    class UserServlet {
+        -UserDAO userDAO
+        +doGet(req, res) void
+        +doPost(req, res) void
+    }
+
+    class DashboardServlet {
+        -RoomDAO roomDAO
+        -BookingDAO bookingDAO
+        +doGet(req, res) void
+    }
+
+    class AuthFilter {
+        +doFilter(req, res, chain) void
+    }
+
+    class LogoutServlet {
+        +doGet(req, res) void
+    }
+
+    %% ─── RELATIONSHIPS ──────────────────────────────────────
+    Booking "many" --> "1" User : guestId
+    Booking "many" --> "1" Room : roomId
+    Payment "1" --> "1" Booking : bookingId
+
+    BookingDAO ..> Booking : uses
+    BookingDAO ..> DBConnection : uses
+    PaymentDAO ..> Payment : uses
+    PaymentDAO ..> DBConnection : uses
+    RoomDAO ..> Room : uses
+    RoomDAO ..> DBConnection : uses
+    UserDAO ..> User : uses
+    UserDAO ..> DBConnection : uses
+    StaffDAO ..> Staff : uses
+    StaffDAO ..> DBConnection : uses
+
+    LoginServlet --> StaffDAO : delegates
+    RoomServlet --> RoomDAO : delegates
+    BookingServlet --> BookingDAO : delegates
+    PaymentServlet --> PaymentDAO : delegates
+    PaymentServlet --> BookingDAO : delegates
+    UserServlet --> UserDAO : delegates
+    DashboardServlet --> RoomDAO : delegates
+    DashboardServlet --> BookingDAO : delegates
+    AuthFilter ..> LoginServlet : protects routes
+```
+
+---
+
+## 2. Use Case Diagram
+
+Shows actors and what actions they can perform in the system.
+
+```mermaid
+%%{init: {"theme": "default"}}%%
+graph LR
+    subgraph Actors
+        A(["👤 Admin"])
+        R(["👤 Receptionist"])
+        S(["⚙️ System"])
+    end
+
+    subgraph UC ["OceanView Resort — Use Cases"]
+        direction TB
+
+        subgraph Auth ["Authentication"]
+            UC1["Login"]
+            UC2["Logout"]
+        end
+
+        subgraph GuestMgmt ["Guest Management"]
+            UC3["Register Guest"]
+            UC4["View All Guests"]
+        end
+
+        subgraph RoomMgmt ["Room Management"]
+            UC5["Add Room"]
+            UC6["Edit Room"]
+            UC7["Delete Room"]
+            UC8["View / Search Rooms"]
+        end
+
+        subgraph BookingMgmt ["Booking Management"]
+            UC9["Create Booking"]
+            UC10["View All Bookings"]
+            UC11["Update Booking Status"]
+            UC12["Cancel / Delete Booking"]
+        end
+
+        subgraph PaymentMgmt ["Payment Management"]
+            UC13["Record Payment"]
+            UC14["View Payment History"]
+        end
+
+        subgraph Dashboard ["Dashboard & Reports"]
+            UC15["View Dashboard Stats"]
+            UC16["Monthly Revenue Report"]
+            UC17["Cancellation Rate Report"]
+        end
+
+        subgraph AutoLogic ["System Automation"]
+            UC18["Auto-update Room Status on Check-in"]
+            UC19["Auto-update Room to Cleaning on Checkout"]
+            UC20["Block Deletion of Occupied Room"]
+        end
+    end
+
+    %% Admin connections
+    A --> UC1
+    A --> UC2
+    A --> UC3
+    A --> UC4
+    A --> UC5
+    A --> UC6
+    A --> UC7
+    A --> UC8
+    A --> UC9
+    A --> UC10
+    A --> UC11
+    A --> UC12
+    A --> UC13
+    A --> UC14
+    A --> UC15
+    A --> UC16
+    A --> UC17
+
+    %% Receptionist connections
+    R --> UC1
+    R --> UC2
+    R --> UC3
+    R --> UC4
+    R --> UC8
+    R --> UC9
+    R --> UC10
+    R --> UC11
+    R --> UC13
+    R --> UC14
+    R --> UC15
+
+    %% System automations
+    S --> UC18
+    S --> UC19
+    S --> UC20
+
+    UC9 -.triggers.-> UC18
+    UC13 -.triggers.-> UC19
+    UC7 -.checks.-> UC20
+```
+
+---
+
+## 3. Sequence Diagrams
+
+### 3a. Login Flow
+
+```mermaid
+sequenceDiagram
+    actor Staff
+    participant Browser
+    participant AuthFilter
+    participant LoginServlet
+    participant StaffDAO
+    participant DB as MySQL DB
+
+    Staff->>Browser: Enter email & password → click Login
+    Browser->>LoginServlet: POST /admin/login {username, password}
+    LoginServlet->>StaffDAO: authenticate(username, password)
+    StaffDAO->>DB: SELECT * FROM staff WHERE email=? AND password=?
+    DB-->>StaffDAO: Staff row (or null)
+    StaffDAO-->>LoginServlet: Staff object (or null)
+
+    alt Login successful
+        LoginServlet->>Browser: 200 OK + {role: "ADMIN" | "RECEPTIONIST"}
+        Browser->>Browser: Redirect to admin-dashboard.html or receptionist-dashboard.html
+    else Invalid credentials
+        LoginServlet->>Browser: 401 "Invalid email or password"
+    end
+
+    Note over Browser,AuthFilter: On every subsequent request…
+    Browser->>AuthFilter: HTTP Request to /admin/*
+    AuthFilter->>AuthFilter: Check session for user attribute
+    alt Session valid
+        AuthFilter->>AuthFilter: Forward to servlet
+    else No session
+        AuthFilter->>Browser: Redirect to /login.html
+    end
+```
+
+---
+
+### 3b. Create Booking Flow (Receptionist/Admin)
+
+```mermaid
+sequenceDiagram
+    actor Staff
+    participant Browser
+    participant BookingServlet
+    participant BookingDAO
+    participant DB as MySQL DB
+
+    Staff->>Browser: Fill guest ID, room, dates → Submit
+    Browser->>BookingServlet: POST /admin/bookings {action:"add", userId, roomId, checkIn, checkOut, totalPrice}
+    BookingServlet->>BookingServlet: Build Booking object
+    BookingServlet->>BookingDAO: addBooking(booking)
+
+    BookingDAO->>DB: BEGIN TRANSACTION
+    BookingDAO->>DB: INSERT INTO bookings (user_id, room_id, check_in, check_out, total_price, status)
+    DB-->>BookingDAO: rows affected
+
+    alt Insert successful
+        BookingDAO->>DB: UPDATE rooms SET status='Occupied' WHERE room_id=?
+        DB-->>BookingDAO: rows affected
+        BookingDAO->>DB: COMMIT
+        BookingDAO-->>BookingServlet: true
+        BookingServlet->>Browser: 200 OK
+        Browser->>Browser: Refresh bookings table
+    else Insert failed
+        BookingDAO->>DB: ROLLBACK
+        BookingDAO-->>BookingServlet: false
+        BookingServlet->>Browser: 500 Internal Server Error
+    end
+```
+
+---
+
+### 3c. Process Payment & Checkout Flow
+
+```mermaid
+sequenceDiagram
+    actor Staff
+    participant Browser
+    participant PaymentServlet
+    participant PaymentDAO
+    participant BookingDAO
+    participant DB as MySQL DB
+
+    Staff->>Browser: Select booking → Enter payment details → Submit
+    Browser->>PaymentServlet: POST /admin/payments {bookingId, paymentMethod, amount, paymentStatus}
+    PaymentServlet->>PaymentServlet: Build Payment object
+    PaymentServlet->>PaymentDAO: addPayment(payment)
+
+    PaymentDAO->>DB: INSERT INTO payments (booking_id, payment_method, amount, payment_status, NOW())
+    DB-->>PaymentDAO: rows affected
+
+    alt Payment inserted
+        PaymentDAO->>DB: UPDATE bookings SET status='Completed' WHERE booking_id=?
+        PaymentDAO->>DB: SELECT room_id FROM bookings WHERE booking_id=?
+        DB-->>PaymentDAO: room_id
+        PaymentDAO->>DB: UPDATE rooms SET status='Cleaning' WHERE room_id=?
+        DB-->>PaymentDAO: OK
+        PaymentDAO-->>PaymentServlet: true
+        PaymentServlet->>Browser: 200 {message:"Payment recorded successfully"}
+    else Payment failed
+        PaymentDAO-->>PaymentServlet: false
+        PaymentServlet->>Browser: 500 {error:"Failed to record payment"}
+    end
+```
+
+---
+
+### 3d. Room Management Flow (Admin)
+
+```mermaid
+sequenceDiagram
+    actor Admin
+    participant Browser
+    participant RoomServlet
+    participant RoomDAO
+    participant DB as MySQL DB
+
+    %% Add Room
+    Admin->>Browser: Fill room form → Add Room
+    Browser->>RoomServlet: POST /admin/rooms {action:"add", roomNumber, type, price, status, description}
+    RoomServlet->>RoomDAO: addRoom(room)
+    RoomDAO->>DB: INSERT INTO rooms (...)
+    DB-->>RoomDAO: success
+    RoomDAO-->>RoomServlet: true
+    RoomServlet->>Browser: 200 OK
+
+    %% Delete Room (guarded)
+    Admin->>Browser: Click Delete on a room
+    Browser->>RoomServlet: POST /admin/rooms {action:"delete", roomId}
+    RoomServlet->>RoomDAO: deleteRoom(roomId)
+    RoomDAO->>DB: SELECT status FROM rooms WHERE room_id=?
+    DB-->>RoomDAO: status
+
+    alt Room is Occupied
+        RoomDAO-->>RoomServlet: false (blocked)
+        RoomServlet->>Browser: 400 "Cannot delete occupied room"
+    else Room is Available / Maintenance
+        RoomDAO->>DB: DELETE FROM rooms WHERE room_id=?
+        DB-->>RoomDAO: success
+        RoomDAO-->>RoomServlet: true
+        RoomServlet->>Browser: 200 OK
+    end
+```
+
+---
+
+## Data Flow Summary
+
+| Layer | Role | Key Classes |
+|---|---|---|
+| **View** | HTML/CSS/JS dashboards | `login.html`, `admin-dashboard.html`, `receptionist-dashboard.html` |
+| **Controller** | Receives HTTP requests, routes actions | `LoginServlet`, `BookingServlet`, `RoomServlet`, `PaymentServlet`, `UserServlet`, `DashboardServlet` |
+| **Filter** | Protects all `/admin/*` routes | `AuthFilter` |
+| **DAO** | Executes SQL, returns model objects | `BookingDAO`, `RoomDAO`, `PaymentDAO`, `UserDAO`, `StaffDAO` |
+| **Model** | Plain Java objects (POJOs) | `Booking`, `Room`, `Payment`, `User`, `Staff` |
+| **Utility** | Singleton DB connection pool | `DBConnection` |
+| **Database** | Persists all data | `oceanviewresortdb` (MySQL) |
