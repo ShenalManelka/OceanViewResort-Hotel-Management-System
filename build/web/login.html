@@ -4,87 +4,162 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Staff Login | Ocean View Resort</title>
+    <title>Staff Portal | Ocean View Resort</title>
     <link rel="stylesheet" href="CSS/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
-            --primary-gradient: linear-gradient(135deg, #4361ee, #4cc9f0);
-            --bg-gradient: radial-gradient(circle at top right, #f8f9ff 0%, #e0e7ff 100%);
-            --glass-bg: rgba(255, 255, 255, 0.9);
-            --card-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+            --primary-accent: #4361EE;
+            --primary-light: #4895EF;
+            --primary-dark: #3F37C9;
+            --glass-bg: rgba(255, 255, 255, 0.85);
+            --glass-border: rgba(255, 255, 255, 0.4);
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
         body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Inter', -apple-system, sans-serif;
-            background: var(--bg-gradient);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .auth-wrapper {
-            width: 100%;
-            max-width: 420px;
-            padding: 20px;
-        }
-
-        .auth-card {
-            background: var(--glass-bg);
-            backdrop-filter: blur(10px);
-            border-radius: 24px;
-            padding: 40px;
-            box-shadow: var(--card-shadow);
-            border: 1px solid rgba(255, 255, 255, 0.8);
-            position: relative;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: #f8fafc;
+            height: 100vh;
             overflow: hidden;
-            transition: transform 0.3s ease;
+            display: flex;
         }
 
-        .auth-card:hover {
-            transform: translateY(-5px);
+        /* Split Screen Container */
+        .split-screen {
+            display: flex;
+            width: 100%;
+            height: 100%;
         }
 
-        .auth-card::before {
-            content: '';
+        /* Left Side: Image Panel */
+        .image-panel {
+            width: 55%;
+            height: 100%;
+            position: relative;
+            background: #000;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 60px;
+            color: white;
+            overflow: hidden;
+        }
+
+        .image-panel img {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
-            height: 6px;
-            background: var(--primary-gradient);
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.7;
+            transition: transform 10s ease;
         }
 
-        /* Logo Area */
-        .logo-container {
-            text-align: center;
-            margin-bottom: 24px;
+        .image-panel:hover img {
+            transform: scale(1.05);
         }
 
-        .brand-logo {
-            width: 70px;
-            height: 70px;
+        .image-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(15, 23, 42, 0.8) 0%, transparent 60%);
+            z-index: 1;
+        }
+
+        .image-content {
+            position: relative;
+            z-index: 2;
+            max-width: 500px;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .image-content h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 48px;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            letter-spacing: -1px;
+        }
+
+        .image-content p {
+            font-size: 18px;
+            opacity: 0.9;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        /* Right Side: Form Panel */
+        .form-panel {
+            width: 45%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            background: radial-gradient(circle at 10% 20%, rgba(67, 97, 238, 0.03) 0%, transparent 50%);
+        }
+
+        .login-card {
+            width: 100%;
+            max-width: 420px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 48px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.08);
+            animation: slideInRight 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .logo-box {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 32px;
+        }
+
+        .logo-box img {
+            width: 48px;
+            height: 48px;
             object-fit: contain;
-            margin-bottom: 16px;
-            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
         }
 
-        .login-illustration {
-            width: 64px;
-            height: 64px;
-            background: rgba(67, 97, 238, 0.1);
-            color: #4361ee;
-            border-radius: 18px;
-            display: grid;
-            place-items: center;
+        .logo-box h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .form-header {
+            margin-bottom: 32px;
+        }
+
+        .form-header h3 {
+            font-family: 'Outfit', sans-serif;
             font-size: 28px;
-            margin: 0 auto 16px;
+            font-weight: 800;
+            color: var(--text-main);
+            margin-bottom: 8px;
         }
 
-        /* Form Styling */
+        .form-header p {
+            color: var(--text-muted);
+            font-size: 14px;
+            font-weight: 500;
+        }
+
         .form-group {
             margin-bottom: 20px;
         }
@@ -92,155 +167,252 @@
         .form-group label {
             display: block;
             font-size: 13px;
-            font-weight: 600;
-            color: #4b5563;
+            font-weight: 700;
+            color: var(--text-main);
             margin-bottom: 8px;
-            margin-left: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
-        .input-group {
+        .input-wrapper {
             position: relative;
             display: flex;
             align-items: center;
         }
 
-        .input-group i {
+        .input-wrapper i {
             position: absolute;
             left: 16px;
-            color: #9ca3af;
+            color: var(--text-muted);
             font-size: 16px;
-            transition: color 0.3s ease;
+            transition: all 0.3s ease;
         }
 
         .form-input {
             width: 100%;
             padding: 14px 16px 14px 48px;
+            background: white;
+            border: 1.5px solid #e2e8f0;
             border-radius: 12px;
-            border: 2px solid #f3f4f6;
-            background: #f9fafb;
             font-size: 15px;
+            font-weight: 500;
+            color: var(--text-main);
             transition: all 0.3s ease;
             outline: none;
-            box-sizing: border-box;
         }
 
         .form-input:focus {
-            border-color: #4361ee;
-            background: #fff;
+            border-color: var(--primary-accent);
             box-shadow: 0 0 0 4px rgba(67, 97, 238, 0.1);
         }
 
-        .form-input:focus + i {
-            color: #4361ee;
+        .form-input:focus+i {
+            color: var(--primary-accent);
+            transform: scale(1.1);
         }
 
-        /* Button Styling */
-        .btn-primary {
-            background: var(--primary-gradient);
+        #submitBtn {
+            width: 100%;
+            padding: 16px;
+            background: var(--primary-accent);
             color: white;
             border: none;
-            padding: 14px;
             border-radius: 12px;
             font-size: 16px;
             font-weight: 700;
             cursor: pointer;
-            width: 100%;
             display: flex;
             align-items: center;
             justify-content: center;
+            gap: 12px;
             transition: all 0.3s ease;
             box-shadow: 0 10px 15px -3px rgba(67, 97, 238, 0.3);
-            margin-top: 24px;
+            margin-top: 12px;
         }
 
-        .btn-primary:hover {
-            opacity: 0.9;
-            transform: scale(1.01);
-            box-shadow: 0 12px 20px -3px rgba(67, 97, 238, 0.4);
+        #submitBtn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 20px 25px -5px rgba(67, 97, 238, 0.25);
         }
 
-        .btn-primary:disabled {
-            background: #9ca3af;
+        #submitBtn:active {
+            transform: translateY(0);
+        }
+
+        #submitBtn:disabled {
+            background: #94a3b8;
             cursor: not-allowed;
             transform: none;
+            box-shadow: none;
         }
 
         #errorMsg {
-            background: #fff5f5;
-            color: #e53e3e;
-            padding: 12px;
-            border-radius: 10px;
             margin-top: 20px;
-            text-align: center;
+            padding: 12px 16px;
+            background: #fef2f2;
+            border: 1px solid #fee2e2;
+            color: #ef4444;
+            border-radius: 10px;
             font-size: 14px;
-            font-weight: 500;
+            font-weight: 600;
             display: none;
-            border: 1px solid #feb2b2;
-            animation: shake 0.4s ease-in-out;
+            text-align: center;
+            animation: shake 0.4s cubic-bezier(.36, .07, .19, .97) both;
+        }
+
+        .footer-note {
+            margin-top: 32px;
+            text-align: center;
+            font-size: 12px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
         }
 
         @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-5px); }
-            75% { transform: translateX(5px); }
+
+            10%,
+            90% {
+                transform: translate3d(-1px, 0, 0);
+            }
+
+            20%,
+            80% {
+                transform: translate3d(2px, 0, 0);
+            }
+
+            30%,
+            50%,
+            70% {
+                transform: translate3d(-4px, 0, 0);
+            }
+
+            40%,
+            60% {
+                transform: translate3d(4px, 0, 0);
+            }
         }
 
-        .footer-text {
-            margin-top: 32px;
-            text-align: center;
-            border-top: 1px solid #f3f4f6;
-            padding-top: 20px;
-            font-size: 12px;
-            color: #9ca3af;
-            letter-spacing: 0.5px;
+        /* Mobile Adjustments */
+        @media (max-width: 1024px) {
+            .image-panel {
+                display: none;
+            }
+
+            .form-panel {
+                width: 100%;
+                background: var(--bg-color);
+            }
+
+            body {
+                overflow-y: auto;
+            }
         }
     </style>
 </head>
 
 <body>
-    <div class="auth-wrapper">
-        <div class="auth-card">
-            <div class="logo-container">
-                <img src="assests/OVRLogo.png" alt="Ocean View Logo" class="brand-logo">
-                <h2 style="color: #1f2937; font-size: 26px; margin: 0 0 6px; font-weight: 800;">Staff Portal</h2>
-                <p style="color: #6b7280; font-size: 14px; margin: 0; font-weight: 500;">Ocean View Resort & Spa Management</p>
+    <div class="split-screen">
+        <!-- Left Side -->
+        <div class="image-panel">
+            <img src="assests/login.jpeg" alt="Resort View">
+            <div class="image-overlay"></div>
+            <div class="image-content">
+                <h1>Crafting Unforgettable Experiences.</h1>
+                <p>Access the Ocean View Resort & Spa internal management platform. Designed for efficiency, built for
+                    hospitality excellence.</p>
+                <div style="display: flex; gap: 20px;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 24px; font-weight: 800; color: white;">24/7</div>
+                        <div
+                            style="font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--primary-light);">
+                            Operations</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 24px; font-weight: 800; color: white;">Active</div>
+                        <div
+                            style="font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--primary-light);">
+                            Management</div>
+                    </div>
+                </div>
             </div>
+        </div>
 
-            <form id="loginForm">
-                <div class="form-group">
-                    <label for="username">Email Address</label>
-                    <div class="input-group">
-                        <input type="email" id="username" name="username" class="form-input"
-                            placeholder="name@oceanview.com" required>
-                        <i class="fas fa-envelope"></i>
-                    </div>
+        <!-- Right Side -->
+        <div class="form-panel">
+            <div class="login-card">
+                <div class="logo-box">
+                    <img src="assests/OVRLogo.png" alt="OVR Logo">
+                    <h2>Ocean View</h2>
                 </div>
 
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <div class="input-group">
-                        <input type="password" id="password" name="password" class="form-input" placeholder="••••••••"
-                            required>
-                        <i class="fas fa-lock"></i>
-                    </div>
+                <div class="form-header">
+                    <h3>Staff Portal</h3>
+                    <p>Enter your credentials to manage resort operations.</p>
                 </div>
 
-                <button type="submit" id="submitBtn" class="btn-primary">
-                    <span>Sign In</span>
-                    <i class="fas fa-arrow-right" style="font-size: 14px; margin-left: 10px;"></i>
-                </button>
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label for="username">Email Address</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-envelope"></i>
+                            <input type="email" id="username" name="username" class="form-input"
+                                placeholder="name@oceanview.com" required>
+                        </div>
+                    </div>
 
-                <div id="errorMsg"></div>
-            </form>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" id="password" name="password" class="form-input"
+                                placeholder="••••••••" required>
+                        </div>
+                    </div>
 
-            <div class="footer-text">
-                &copy; 2026 Ocean View Resort & Spa • Internal Access Only
+                    <button type="submit" id="submitBtn">
+                        Sign In
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+
+                    <div id="errorMsg"></div>
+                </form>
+
+                <div class="footer-note">
+                    &copy; 2026 Ocean View Resort & Spa<br>
+                    Internal Management System Access
+                </div>
             </div>
         </div>
     </div>
 
     <script>
-        // No changes made to your logic - purely UI/UX enhancements above
+        // JS Logic Remains Unchanged
         document.getElementById('loginForm').addEventListener('submit', function (e) {
             e.preventDefault();
             const form = this;
@@ -294,9 +466,10 @@
 
             function resetBtn() {
                 submitBtn.disabled = false;
-                submitBtn.innerHTML = '<span>Sign In</span><i class="fas fa-arrow-right" style="font-size: 14px; margin-left: 10px;"></i>';
+                submitBtn.innerHTML = 'Sign In <i class="fas fa-arrow-right"></i>';
             }
         });
     </script>
 </body>
+
 </html>
