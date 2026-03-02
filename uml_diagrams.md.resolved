@@ -271,7 +271,7 @@ graph LR
 
         subgraph AutoLogic ["System Automation"]
             UC18["Auto-update Room Status on Check-in"]
-            UC19["Auto-update Room to Cleaning on Checkout"]
+
             UC20["Block Deletion of Occupied Room"]
         end
     end
@@ -417,7 +417,7 @@ sequenceDiagram
         PaymentDAO->>DB: UPDATE bookings SET status='Completed' WHERE booking_id=?
         PaymentDAO->>DB: SELECT room_id FROM bookings WHERE booking_id=?
         DB-->>PaymentDAO: room_id
-        PaymentDAO->>DB: UPDATE rooms SET status='Cleaning' WHERE room_id=?
+        PaymentDAO->>DB: UPDATE rooms SET status='Available' WHERE room_id=?
         DB-->>PaymentDAO: OK
         PaymentDAO-->>PaymentServlet: true
         PaymentServlet->>Browser: 200 {message:"Payment recorded successfully"}
