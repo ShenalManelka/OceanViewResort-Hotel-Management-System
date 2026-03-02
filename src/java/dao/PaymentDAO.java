@@ -47,9 +47,9 @@ public class PaymentDAO {
                     }
                 }
 
-                // ✅ Update room status to Cleaning (better logic)
+                // ✅ Update room status to Available (better logic)
                 if (roomId != -1) {
-                    String updateRoom = "UPDATE rooms SET status = 'Cleaning' WHERE room_id = ?";
+                    String updateRoom = "UPDATE rooms SET status = 'Available' WHERE room_id = ?";
                     try (PreparedStatement psRoom = conn.prepareStatement(updateRoom)) {
                         psRoom.setInt(1, roomId);
                         psRoom.executeUpdate();
