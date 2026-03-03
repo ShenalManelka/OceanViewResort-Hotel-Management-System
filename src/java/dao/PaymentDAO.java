@@ -107,6 +107,7 @@ public class PaymentDAO {
                 if (rs.next()) {
                     return new Payment(
                             rs.getInt("payment_id"),
+                            // user_id and room_id fixed
                             rs.getInt("booking_id"),
                             rs.getString("payment_method"),
                             rs.getDouble("amount"),
@@ -120,5 +121,18 @@ public class PaymentDAO {
         }
 
         return null;
+    }
+
+    // ✅ Delete Payment
+    public boolean deletePayment(int paymentId) {
+        String query = "DELETE FROM payments WHERE payment_id = ?";
+        try (Connection conn = DBConnection.getInstance().getConnection();
+                PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setInt(1, paymentId);
+            return ps.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }
