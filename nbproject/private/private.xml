@@ -26,6 +26,13 @@
             <file>file:/C:/3Y%201S/New%20Folder/OceanViewResort/src/java/dao/BookingDAO.java</file>
             <file>file:/C:/3Y%201S/New%20Folder/OceanViewResort/src/java/servlet/BookingServlet.java</file>
             <file>file:/C:/3Y%201S/New%20Folder/OceanViewResort/web/receptionist-dashboard.html</file>
+            <file>file:/C:/3Y%201S/New%20Folder/OceanViewResort/test/DAO/UserDAOTest.java</file>
+            <file>file:/C:/3Y%201S/New%20Folder/OceanViewResort/test/DAO/StaffDAOTest.java</file>
+            <file>file:/C:/3Y%201S/New%20Folder/OceanViewResort/test/DAO/RoomDAOTest.java</file>
+            <file>file:/C:/3Y%201S/New%20Folder/OceanViewResort/test/DAO/PaymentDAOTest.java</file>
+            <file>file:/C:/3Y%201S/New%20Folder/OceanViewResort/test/DAO/BookingDAOTest.java</file>
+            <file>file:/C:/3Y%201S/New%20Folder/OceanViewResort/web/WEB-INF/web.xml</file>
+            <file>file:/C:/3Y%201S/New%20Folder/OceanViewResort/web/META-INF/context.xml</file>
         </group>
     </open-files>
 </project-private>

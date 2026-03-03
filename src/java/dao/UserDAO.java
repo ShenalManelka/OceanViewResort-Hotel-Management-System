@@ -15,7 +15,7 @@ public class UserDAO {
                 "VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = DBConnection.getInstance().getConnection();
-             PreparedStatement ps = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+                PreparedStatement ps = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
 
             ps.setString(1, user.getFirstName());
             ps.setString(2, user.getLastName());
@@ -50,8 +50,8 @@ public class UserDAO {
         String query = "SELECT * FROM users ORDER BY first_name ASC";
 
         try (Connection conn = DBConnection.getInstance().getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(query)) {
+                Statement stmt = conn.createStatement();
+                ResultSet rs = stmt.executeQuery(query)) {
 
             while (rs.next()) {
 
@@ -60,11 +60,10 @@ public class UserDAO {
                         rs.getString("first_name"),
                         rs.getString("last_name"),
                         rs.getString("email"),
-                        rs.getString("password"),   // ⚠ Not for exposing in API
+                        rs.getString("password"), // ⚠ Not for exposing in API
                         rs.getString("phone"),
                         rs.getString("address"),
-                        rs.getString("nic_passport")
-                );
+                        rs.getString("nic_passport"));
 
                 users.add(user);
             }
@@ -82,7 +81,7 @@ public class UserDAO {
         String query = "SELECT * FROM users WHERE user_id = ?";
 
         try (Connection conn = DBConnection.getInstance().getConnection();
-             PreparedStatement ps = conn.prepareStatement(query)) {
+                PreparedStatement ps = conn.prepareStatement(query)) {
 
             ps.setInt(1, userId);
 
@@ -97,8 +96,7 @@ public class UserDAO {
                             rs.getString("password"),
                             rs.getString("phone"),
                             rs.getString("address"),
-                            rs.getString("nic_passport")
-                    );
+                            rs.getString("nic_passport"));
                 }
             }
 
@@ -107,5 +105,21 @@ public class UserDAO {
         }
 
         return null;
+    }
+
+    // ✅ Delete User
+    public boolean deleteUser(int userId) {
+        String query = "DELETE FROM users WHERE user_id = ?";
+
+        try (Connection conn = DBConnection.getInstance().getConnection();
+                PreparedStatement ps = conn.prepareStatement(query)) {
+
+            ps.setInt(1, userId);
+            return ps.executeUpdate() > 0;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }
