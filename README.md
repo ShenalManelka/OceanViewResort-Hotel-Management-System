@@ -70,3 +70,57 @@ The project follows a rigorous **MVC (Model-View-Controller)** pattern:
 1.Login Page 
 <img width="975" height="483" alt="image" src="https://github.com/user-attachments/assets/77297971-8e28-45dc-8e40-9b638498163f" />
 
+2.Admin Dashboard
+<img width="975" height="456" alt="image" src="https://github.com/user-attachments/assets/b32a4570-db59-4c40-a878-c1fd959808c6" />
+
+3.Room Management
+<img width="975" height="458" alt="image" src="https://github.com/user-attachments/assets/6de6c6d4-5071-4b19-a765-4f1041b05735" />
+
+4.Add New Room
+<img width="975" height="480" alt="image" src="https://github.com/user-attachments/assets/a8ec3c3f-d4fc-425c-bcb1-2df52fab94db" />
+
+5.Manage Reservations
+<img width="975" height="482" alt="image" src="https://github.com/user-attachments/assets/89a68a3d-ae2e-4877-8d90-8a8f78da150e" />
+
+6.View Payment History
+<img width="975" height="466" alt="image" src="https://github.com/user-attachments/assets/c552d147-2389-4079-a9a9-929678255910" />
+
+7.View Monthly Reports
+<img width="975" height="483" alt="image" src="https://github.com/user-attachments/assets/e902b99f-2976-41b9-8221-b420932fd986" />
+
+8.Staff Management
+<img width="975" height="469" alt="image" src="https://github.com/user-attachments/assets/dc84bf17-8091-42c5-a4c1-5febd1955730" />
+
+9.Add New Receptionist
+<img width="975" height="476" alt="image" src="https://github.com/user-attachments/assets/a64b212e-7ef3-4d05-b4de-f3aeee9ab28a" />
+
+10.Admin Guidelines
+<img width="975" height="479" alt="image" src="https://github.com/user-attachments/assets/31d1378c-0bf3-4cb6-9223-7a0a8a77e4a8" />
+
+11.Receptionist Dashboard
+<img width="975" height="466" alt="image" src="https://github.com/user-attachments/assets/046924b8-bd36-41e7-b195-6f7a584b0520" />
+
+12.View Rooms
+<img width="975" height="478" alt="image" src="https://github.com/user-attachments/assets/7409422f-64be-4ced-b1b9-bc4851fed37c" />
+
+13.View Reservations
+<img width="975" height="484" alt="image" src="https://github.com/user-attachments/assets/1633ff5c-0d08-4d5f-a03c-4d917ecd6060" />
+
+14. Add New Reservation
+<img width="975" height="482" alt="image" src="https://github.com/user-attachments/assets/a37e2ba4-d961-47dd-8d3f-d5c0c0ad4124" />
+
+15.Check-in Guest
+<img width="975" height="649" alt="image" src="https://github.com/user-attachments/assets/d34d1b4e-1e43-44fa-8d93-f081009304ac" />
+
+16.Generate Bill
+<img width="975" height="465" alt="image" src="https://github.com/user-attachments/assets/c988430e-0c4f-48b7-bf60-5086282ba78d" />
+
+17.Print Bill
+<img width="975" height="478" alt="image" src="https://github.com/user-attachments/assets/6e45544b-d00d-4714-a94e-381705bdcfcc" />
+
+18.Receptionist Guidelines
+<img width="975" height="487" alt="image" src="https://github.com/user-attachments/assets/b931099b-b86f-4e54-b1ba-f9677a29ab63" />
+
+19.Guest List
+<img width="1868" height="913" alt="image" src="https://github.com/user-attachments/assets/e5dac0e8-8ade-41c1-b3bd-df3de7333a82" />
+
