@@ -39,6 +39,9 @@
                 <a href="#" class="nav-item" onclick="showSection('billing')">
                     <i class="fas fa-file-invoice"></i> Payments
                 </a>
+                <a href="#" class="nav-item" onclick="showSection('payment-history')">
+                    <i class="fas fa-history"></i> Payment History
+                </a>
                 <a href="#" class="nav-item" onclick="showSection('help')">
                     <i class="fas fa-question-circle"></i> Help
                 </a>
@@ -148,6 +151,7 @@
                     </table>
                 </div>
             </section>
+
 
             <!-- Bookings Section -->
             <section id="bookings-section" style="display: none;">
@@ -287,6 +291,32 @@
                             </button>
                         </div>
                     </div>
+                </div>
+            </section>
+
+            <!-- Payment History Section -->
+            <section id="payment-history-section" style="display: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+                    <h3>Transaction History</h3>
+                </div>
+                <div class="glass" style="overflow-x: auto;">
+                    <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                        <thead>
+                            <tr style="border-bottom: 1px solid #ddd;">
+                                <th style="padding: 15px;">Payment ID</th>
+                                <th style="padding: 15px;">Booking ID</th>
+                                <th style="padding: 15px;">Guest Name</th>
+                                <th style="padding: 15px;">Room #</th>
+                                <th style="padding: 15px;">Method</th>
+                                <th style="padding: 15px;">Amount</th>
+                                <th style="padding: 15px;">Date</th>
+                                <th style="padding: 15px; text-align: center;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="payment-history-table-body">
+                            <!-- JS will populate -->
+                        </tbody>
+                    </table>
                 </div>
             </section>
 
@@ -592,6 +622,7 @@
             }
         }
     </style>
+    <script src="JS/dashboard-receptionist.js"></script>
 </body>
 
 </html>
