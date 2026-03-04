@@ -67,6 +67,6 @@ The project follows a rigorous **MVC (Model-View-Controller)** pattern:
 ---
 
 ## 📸 Screenshots & Diagrams
-Detailed technical documentation, including sequence diagrams and use-case analysis, can be found in the [docs/](docs/) directory.
+1.Login Page 
+<img width="975" height="483" alt="image" src="https://github.com/user-attachments/assets/77297971-8e28-45dc-8e40-9b638498163f" />
 
-*Designed with ❤️ for OceanView Resort.*
