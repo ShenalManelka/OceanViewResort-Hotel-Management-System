@@ -7,15 +7,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Modal Form Listener
-    const roomForm = document.getElementById('roomForm');
-    if (roomForm) {
-        roomForm.addEventListener('submit', handleRoomSubmit);
-    }
 });
 
 // --- Navigation Logic ---
 function showSection(sectionId) {
-    const sections = ['overview', 'rooms', 'bookings', 'reports', 'bills', 'help', 'staff'];
+    const sections = ['overview', 'rooms', 'bookings', 'reports', 'bills', 'staff', 'guests', 'help'];
     sections.forEach(s => {
         const el = document.getElementById(`${s}-section`);
         if (el) el.style.display = (s === sectionId) ? 'block' : 'none';
@@ -36,7 +32,8 @@ function showSection(sectionId) {
         'reports': 'Business Reports',
         'bills': 'Payment History',
         'help': 'System Guidelines',
-        'staff': 'Staff Management'
+        'staff': 'Staff Management',
+        'guests': 'Guest Directory'
     };
     const pageTitle = document.getElementById('page-title');
     if (pageTitle) pageTitle.innerText = titles[sectionId] || 'Dashboard';
@@ -47,6 +44,153 @@ function showSection(sectionId) {
     if (sectionId === 'reports') loadReports();
     if (sectionId === 'bills') loadBills();
     if (sectionId === 'staff') loadStaff();
+    if (sectionId === 'guests') loadGuests();
+}
+
+// --- Guests Logic ---
+let allGuests = [];
+
+async function loadGuests(query = '') {
+    const tbody = document.getElementById('guests-table-body');
+    if (!tbody) return;
+
+    try {
+        const response = await fetch(`admin/users${query ? `?query=${encodeURIComponent(query)}` : ''}`);
+        allGuests = await response.json();
+        renderGuests(allGuests);
+    } catch (error) {
+        console.error('Error loading guests:', error);
+    }
+}
+
+function renderGuests(guests) {
+    const tbody = document.getElementById('guests-table-body');
+    if (!tbody) return;
+
+    if (guests.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 20px;">No guests found</td></tr>';
+        return;
+    }
+
+    tbody.innerHTML = guests.map(g => `
+        <tr style="border-bottom: 1px solid #eee;">
+            <td style="padding: 15px;">#${g.userId}</td>
+            <td style="padding: 15px; font-weight: 600;">${g.firstName} ${g.lastName}</td>
+            <td style="padding: 15px;">${g.email}</td>
+            <td style="padding: 15px;">${g.phone}</td>
+            <td style="padding: 15px;">${g.nicPassport}</td>
+            <td style="padding: 15px; text-align: center; display: flex; gap: 8px; justify-content: center;">
+                <button class="btn btn-primary" style="padding: 5px 10px; font-size: 11px;" onclick="openGuestModal(${g.userId})">
+                    <i class="fas fa-edit"></i> Edit
+                </button>
+                <button class="btn" style="padding: 5px 10px; font-size: 11px; color: var(--error);" onclick="deleteGuest(${g.userId})">
+                    <i class="fas fa-trash"></i> Delete
+                </button>
+            </td>
+        </tr>
+    `).join('');
+}
+
+// --- Guest CRUD Functions ---
+function openGuestModal(userId = null) {
+    const modal = document.getElementById('guestModal');
+    const form = document.getElementById('guestForm');
+    const title = document.getElementById('guestModalTitle');
+    const passLabel = document.getElementById('passwordLabel');
+    const passInput = document.getElementById('guestPasswordInput');
+
+    if (userId) {
+        title.innerText = 'Edit Guest Details';
+        passLabel.innerText = 'New Password (leave blank to keep current)';
+        passInput.required = false;
+
+        const guest = allGuests.find(g => g.userId == userId);
+
+        if (guest) {
+            form.userId.value = guest.userId;
+            form.firstName.value = guest.firstName;
+            form.lastName.value = guest.lastName;
+            form.email.value = guest.email;
+            form.phone.value = guest.phone;
+            form.nicPassport.value = guest.nicPassport;
+            form.address.value = guest.address || '';
+        }
+    } else {
+        title.innerText = 'Add New Guest';
+        passLabel.innerText = 'Password';
+        passInput.required = true;
+        form.reset();
+        form.userId.value = '';
+    }
+    modal.style.display = 'grid';
+}
+
+function closeGuestModal() {
+    document.getElementById('guestModal').style.display = 'none';
+    document.getElementById('guestForm').reset();
+}
+
+async function handleGuestSubmit(e) {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const data = Object.fromEntries(formData);
+    const isUpdate = !!data.userId;
+    data.action = isUpdate ? 'update' : 'add';
+
+    try {
+        const response = await fetch('admin/users', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+
+        if (response.ok) {
+            closeGuestModal();
+            loadGuests();
+            alert(`Guest ${isUpdate ? 'updated' : 'added'} successfully!`);
+        } else {
+            alert('Failed to save guest: ' + response.statusText);
+        }
+    } catch (err) {
+        alert('Connection error');
+    }
+}
+
+async function deleteGuest(userId) {
+    if (!confirm('Are you sure you want to delete this guest? This will also remove all their bookings.')) return;
+
+    try {
+        const response = await fetch('admin/users', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'delete', userId: userId })
+        });
+
+        if (response.ok) {
+            loadGuests();
+        } else {
+            alert('Failed to delete guest');
+        }
+    } catch (err) {
+        alert('Connection error');
+    }
+}
+
+const handleGuestSearch = debounce((query) => {
+    loadGuests(query);
+}, 300);
+
+// Debounce Utility
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
 }
 
 // --- Data Loading ---
@@ -74,16 +218,16 @@ function formatPrice(lkrAmount) {
     return `Rs. ${lkrAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
 
+let allRooms = [];
+
 async function loadRooms() {
     try {
         const response = await fetch('admin/rooms');
-        const rooms = await response.json();
+        allRooms = await response.json();
         const tbody = document.getElementById('rooms-table-body');
         if (!tbody) return;
 
-        tbody.innerHTML = rooms.map(room => {
-            const roomJson = JSON.stringify(room).replace(/"/g, '&quot;');
-            return `
+        tbody.innerHTML = allRooms.map(room => `
             <tr style="border-bottom: 1px solid #eee;">
                 <td style="padding: 15px;">${room.roomNumber}</td>
                 <td style="padding: 15px;">${room.type}</td>
@@ -92,36 +236,44 @@ async function loadRooms() {
                     <span class="status-badge status-${room.status.toLowerCase()}">${room.status}</span>
                 </td>
                 <td style="padding: 15px;">
-                    <button class="btn" style="color: var(--primary-color); cursor:pointer;" onclick="openRoomModal(${roomJson})">
-                        <i class="fas fa-edit"></i>
+                    <button class="btn btn-primary" style="padding: 5px 10px; font-size: 11px;" onclick="openRoomModal(${room.roomId})">
+                        <i class="fas fa-edit"></i> Edit
                     </button>
-                    <button class="btn" style="color: var(--error); cursor:pointer;" onclick="deleteRoom(${room.roomId})">
-                        <i class="fas fa-trash"></i>
-                    </button>
+                    ${room.status === 'Occupied'
+                ? `<button class="btn" style="padding: 5px 10px; font-size: 11px; opacity: 0.5; cursor: not-allowed;" title="Cannot delete an occupied room" disabled>
+                            <i class="fas fa-trash"></i> Delete
+                           </button>`
+                : `<button class="btn" style="padding: 5px 10px; font-size: 11px; color: var(--error);" onclick="deleteRoom(${room.roomId})">
+                            <i class="fas fa-trash"></i> Delete
+                           </button>`
+            }
                 </td>
-            </tr>`;
-        }).join('');
+            </tr>
+        `).join('');
     } catch (err) {
         console.error('Error loading rooms:', err);
     }
 }
 
 // --- Room Modal Logic (Add & Update) ---
-function openRoomModal(room = null) {
+function openRoomModal(roomId = null) {
     const modal = document.getElementById('roomModal');
     const form = document.getElementById('roomForm');
     const title = document.getElementById('modalTitle');
 
     form.reset();
 
-    if (room && room.roomId) {
+    if (roomId) {
         title.innerText = 'Edit Room';
-        form.roomId.value = room.roomId;
-        form.roomNumber.value = room.roomNumber;
-        form.type.value = room.type;
-        form.price.value = room.price;
-        form.status.value = room.status;
-        form.description.value = room.description || '';
+        const room = allRooms.find(r => r.roomId == roomId);
+        if (room) {
+            form.roomId.value = room.roomId;
+            form.roomNumber.value = room.roomNumber;
+            form.type.value = room.type;
+            form.price.value = room.price;
+            form.status.value = room.status;
+            form.description.value = room.description || '';
+        }
     } else {
         title.innerText = 'Add New Room';
         form.roomId.value = '';
@@ -137,44 +289,51 @@ function closeRoomModal() {
 async function handleRoomSubmit(e) {
     e.preventDefault();
     const formData = new FormData(e.target);
-    const roomId = formData.get('roomId');
-    const action = (roomId && roomId !== "") ? 'update' : 'add';
-
-    const params = new URLSearchParams(formData);
-    params.append('action', action);
+    const data = Object.fromEntries(formData);
+    const action = data.roomId ? 'update' : 'add';
+    data.action = action;
 
     try {
         const response = await fetch('admin/rooms', {
             method: 'POST',
-            body: params
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
         });
 
         if (response.ok) {
             closeRoomModal();
             loadRooms();
             loadStats();
+            showToast(`Room ${action === 'add' ? 'added' : 'updated'} successfully!`, 'success');
         } else {
             const errorText = await response.text();
-            alert('Operation failed: ' + errorText);
+            showToast('Operation failed: ' + errorText, 'error');
         }
     } catch (err) {
-        alert('Network error');
+        showToast('Network error', 'error');
     }
 }
 
 async function deleteRoom(id) {
-    if (confirm("Are you sure you want to delete this room?")) {
-        try {
-            const response = await fetch(`admin/rooms?action=delete&roomId=${id}`, { method: 'POST' });
-            if (response.ok) {
-                loadRooms();
-                loadStats();
-            } else {
-                alert('Deletion failed');
-            }
-        } catch (err) {
-            alert('Connection error');
+    if (!confirm("Are you sure you want to delete this room?")) return;
+
+    try {
+        const response = await fetch('admin/rooms', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'delete', roomId: id })
+        });
+
+        if (response.ok) {
+            loadRooms();
+            loadStats();
+            showToast('Room deleted successfully!', 'success');
+        } else {
+            const errorText = await response.text();
+            showToast('Deletion failed: ' + errorText, 'error');
         }
+    } catch (err) {
+        showToast('Connection error', 'error');
     }
 }
 
@@ -369,4 +528,116 @@ function handleLogout() {
     if (confirm("Are you sure you want to logout?")) {
         window.location.href = 'admin/logout';
     }
+}
+// --- Staff Management ---
+async function loadStaff() {
+    const tbody = document.getElementById('staff-table-body');
+    if (!tbody) return;
+
+    try {
+        const response = await fetch('admin/staff');
+        const data = await response.json();
+
+        if (!data.length) {
+            tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:30px;color:var(--text-secondary);">No staff records found.</td></tr>';
+            return;
+        }
+
+        tbody.innerHTML = data.map(s => `
+            <tr>
+                <td style="padding: 15px;">#${s.id}</td>
+                <td style="padding: 15px; font-weight: 600;">${s.fullName}</td>
+                <td style="padding: 15px;">${s.email}</td>
+                <td style="padding: 15px;"><span class="status-badge" style="background:${s.role === 'ADMIN'
+                ? 'rgba(67,97,238,0.1); color:var(--primary-color)'
+                : 'rgba(6,214,160,0.1); color:var(--success)'
+            };">${s.role}</span></td>
+                <td style="padding: 15px;">${s.role === 'RECEPTIONIST'
+                ? `<button class="btn" style="padding:6px 14px;font-size:12px;color:var(--error);border:1px solid var(--error);" onclick="deleteStaff(${s.id}, '${s.fullName}')">
+                        <i class="fas fa-trash"></i> Remove
+                       </button>`
+                : '<span style="color:var(--text-secondary);font-size:12px;">Protected</span>'}
+                </td>
+            </tr>
+        `).join('');
+    } catch (err) {
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:30px;color:var(--error);">Failed to load staff data.</td></tr>';
+    }
+}
+
+function openStaffModal() {
+    const form = document.getElementById('staffForm');
+    if (form) form.reset();
+    const modal = document.getElementById('staffModal');
+    if (modal) modal.style.display = 'grid';
+}
+
+function closeStaffModal() {
+    const modal = document.getElementById('staffModal');
+    if (modal) modal.style.display = 'none';
+}
+
+async function submitStaff(e) {
+    e.preventDefault();
+    const fullName = document.getElementById('staff-fullname').value.trim();
+    const email = document.getElementById('staff-email').value.trim();
+    const password = document.getElementById('staff-password').value.trim();
+
+    try {
+        const response = await fetch('admin/staff', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'add', fullName, email, password })
+        });
+
+        const data = await response.json();
+        if (response.ok) {
+            closeStaffModal();
+            loadStaff();
+            showToast('Receptionist added successfully!', 'success');
+        } else {
+            showToast(data.error || 'Failed to add receptionist.', 'error');
+        }
+    } catch (err) {
+        showToast('Network error. Please try again.', 'error');
+    }
+}
+
+async function deleteStaff(id, name) {
+    if (!confirm(`Remove receptionist "${name}" from the system?`)) return;
+
+    try {
+        const response = await fetch('admin/staff', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'delete', id })
+        });
+
+        const data = await response.json();
+        if (response.ok) {
+            loadStaff();
+            showToast('Staff member removed.', 'success');
+        } else {
+            showToast(data.error || 'Failed to remove staff.', 'error');
+        }
+    } catch (err) {
+        showToast('Network error. Please try again.', 'error');
+    }
+}
+
+function showToast(message, type) {
+    const existing = document.getElementById('toast-msg');
+    if (existing) existing.remove();
+    const toast = document.createElement('div');
+    toast.id = 'toast-msg';
+    toast.textContent = message;
+    toast.style.cssText = `
+        position:fixed; bottom:28px; right:28px; z-index:9999;
+        padding:14px 22px; border-radius:12px; font-size:14px; font-weight:600;
+        color:white; box-shadow:0 8px 20px rgba(0,0,0,0.15);
+        background:${type === 'success' ? 'var(--success)' : 'var(--error)'};
+        animation:fadeInUp 0.3s ease;
+    `;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 3500);
 }

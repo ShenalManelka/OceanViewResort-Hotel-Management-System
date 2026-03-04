@@ -16,41 +16,45 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function showSection(sectionId) {
-    const sections = ['overview', 'rooms', 'bookings', 'billing', 'help'];
-    sections.forEach(s => {
-        const el = document.getElementById(`${s}-section`);
-        if (el) el.style.display = s === sectionId ? 'block' : 'none';
-        else console.warn(`Section ${s}-section not found`);
-    });
+    try {
+        const sections = ['overview', 'rooms', 'bookings', 'billing', 'payment-history', 'help'];
+        sections.forEach(s => {
+            const el = document.getElementById(`${s}-section`);
+            if (el) el.style.display = s === sectionId ? 'block' : 'none';
+        });
 
-    // Update active nav item
-    document.querySelectorAll('.nav-item').forEach(item => {
-        item.classList.remove('active');
-        const onclick = item.getAttribute('onclick');
-        if (onclick && onclick.includes(`showSection('${sectionId}')`)) {
-            item.classList.add('active');
-        } else if (onclick && onclick.includes(`showSection("${sectionId}")`)) {
-            item.classList.add('active');
-        }
-    });
+        // Update active nav item
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.classList.remove('active');
+            const onclick = item.getAttribute('onclick');
+            if (onclick && onclick.includes(`'${sectionId}'`)) {
+                item.classList.add('active');
+            }
+        });
 
-    // Update title
-    const titles = {
-        'overview': 'Reception Overview',
-        'rooms': 'Room Availability',
-        'bookings': 'Check-ins',
-        'billing': 'Guest Payments',
-        'help': 'System Guidelines'
-    };
-    const pageTitle = document.getElementById('page-title');
-    if (pageTitle) pageTitle.innerText = titles[sectionId] || 'Reception';
+        // Update title
+        const titles = {
+            'overview': 'Reception Overview',
+            'rooms': 'Room Availability',
+            'bookings': 'Check-ins',
+            'billing': 'Guest Payments',
+            'payment-history': 'Transaction History',
+            'help': 'System Guidelines'
+        };
+        const pageTitle = document.getElementById('page-title');
+        if (pageTitle) pageTitle.innerText = titles[sectionId] || 'Reception';
 
-    // Load data for the section
-    if (sectionId === 'overview') loadStats();
-    if (sectionId === 'rooms') loadRooms();
-    if (sectionId === 'bookings') loadBookings();
-    if (sectionId === 'billing') cancelBilling();
+        // Load data for the section
+        if (sectionId === 'overview') loadStats();
+        if (sectionId === 'rooms') loadRooms();
+        if (sectionId === 'bookings') loadBookings();
+        if (sectionId === 'billing') cancelBilling();
+        if (sectionId === 'payment-history') loadPaymentHistory();
+    } catch (err) {
+        console.error('Error in showSection:', err);
+    }
 }
+
 
 async function loadStats() {
     try {
@@ -131,6 +135,19 @@ async function updateRoomStatus(id, newStatus) {
     } catch (err) {
         alert('Connection error');
     }
+}
+
+// Debounce Utility
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
 }
 
 // --- Booking Logic ---
@@ -444,4 +461,102 @@ function cancelBilling() {
     currentBillingBooking = null;
     document.getElementById('billing-preview').style.display = 'none';
     document.getElementById('billSearchId').value = '';
+
+    // Reset buttons
+    const finalizeBtn = document.getElementById('finalizeBillBtn');
+    if (finalizeBtn) finalizeBtn.style.display = 'inline-block';
+
+    const printOnlyBtn = document.getElementById('printOnlyBtn');
+    if (printOnlyBtn) printOnlyBtn.style.display = 'none';
+}
+
+// --- Payment History ---
+async function loadPaymentHistory() {
+    try {
+        const response = await fetch('admin/payments');
+        const payments = await response.json();
+        renderPaymentHistory(payments);
+    } catch (err) {
+        console.error('Error loading payment history:', err);
+    }
+}
+
+function renderPaymentHistory(payments) {
+    const tbody = document.getElementById('payment-history-table-body');
+    if (!tbody) return;
+
+    if (payments.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 30px; color: var(--text-secondary);">No transactions found</td></tr>';
+        return;
+    }
+
+    tbody.innerHTML = payments.map(p => `
+        <tr style="border-bottom: 1px solid #eee;">
+            <td style="padding: 15px; font-weight: 600; color: var(--primary-color);">#${p.paymentId}</td>
+            <td style="padding: 15px;">#${p.bookingId}</td>
+            <td style="padding: 15px; font-weight: 600;">${p.guestName}</td>
+            <td style="padding: 15px;">Room ${p.roomNumber}</td>
+            <td style="padding: 15px;">${p.paymentMethod}</td>
+            <td style="padding: 15px; font-weight: 700; color: var(--success);">${formatPrice(p.amount)}</td>
+            <td style="padding: 15px; font-size: 11px; color: var(--text-secondary);">${formatDate(p.paymentDate)}</td>
+            <td style="padding: 15px; text-align: center;">
+                <button class="btn btn-primary" style="padding: 5px 12px; font-size: 11px;" onclick="reprintBill(${p.bookingId})">
+                    <i class="fas fa-print"></i> Reprint
+                </button>
+            </td>
+        </tr>
+    `).join('');
+}
+
+function formatDate(dateStr) {
+    if (!dateStr) return 'N/A';
+    try {
+        const date = new Date(dateStr);
+        return date.toLocaleString();
+    } catch (e) {
+        return dateStr;
+    }
+}
+
+async function reprintBill(bookingId) {
+    try {
+        const response = await fetch(`admin/payments?bookingId=${bookingId}`);
+        const data = await response.json();
+
+        if (data.error) {
+            alert(data.error);
+            return;
+        }
+
+        if (data.found && data.booking) {
+            showSection('billing');
+            currentBillingBooking = data.booking;
+            showBillPreview(data.booking);
+
+            // Hide finalized button for reprints to avoid double payments
+            const finalizeBtn = document.getElementById('finalizeBillBtn');
+            if (finalizeBtn) finalizeBtn.style.display = 'none';
+
+            // Show a simple print button instead
+            let printOnlyBtn = document.getElementById('printOnlyBtn');
+            if (!printOnlyBtn) {
+                printOnlyBtn = document.createElement('button');
+                printOnlyBtn.id = 'printOnlyBtn';
+                printOnlyBtn.className = 'btn btn-primary';
+                printOnlyBtn.innerHTML = '<i class="fas fa-print"></i> Print Copy';
+                printOnlyBtn.onclick = () => {
+                    document.getElementById('bill-controls').style.display = 'none';
+                    window.print();
+                    document.getElementById('bill-controls').style.display = 'grid';
+                };
+                finalizeBtn.parentNode.appendChild(printOnlyBtn);
+            }
+            printOnlyBtn.style.display = 'inline-block';
+
+            const cancelBtn = document.querySelector('button[onclick="cancelBilling()"]');
+            if (cancelBtn) cancelBtn.innerText = 'Back to History';
+        }
+    } catch (err) {
+        alert('Error reprinting bill');
+    }
 }

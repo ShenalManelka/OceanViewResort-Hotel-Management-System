@@ -33,7 +33,29 @@ public class PaymentServlet extends HttpServlet {
             Payment payment = paymentDAO.getPaymentByBookingId(bookingId);
 
             if (payment != null) {
-                response.getWriter().print(new JSONObject(payment).toString());
+                Booking target = bookingDAO.getBookingById(bookingId);
+                StringBuilder json = new StringBuilder("{");
+                json.append("\"paymentId\":").append(payment.getPaymentId()).append(",")
+                        .append("\"bookingId\":").append(payment.getBookingId()).append(",")
+                        .append("\"paymentMethod\":\"").append(payment.getPaymentMethod()).append("\",")
+                        .append("\"amount\":").append(payment.getAmount()).append(",")
+                        .append("\"paymentStatus\":\"").append(payment.getPaymentStatus()).append("\",")
+                        .append("\"paymentDate\":\"").append(payment.getPaymentDate()).append("\",")
+                        .append("\"found\":true,");
+
+                if (target != null) {
+                    json.append("\"booking\":{")
+                            .append("\"bookingId\":").append(target.getBookingId()).append(",")
+                            .append("\"guestName\":\"").append(target.getGuestName()).append("\",")
+                            .append("\"guestEmail\":\"").append(target.getGuestEmail()).append("\",")
+                            .append("\"roomNumber\":\"").append(target.getRoomNumber()).append("\",")
+                            .append("\"totalPrice\":").append(target.getTotalPrice())
+                            .append("}");
+                } else {
+                    json.append("\"booking\":null");
+                }
+                json.append("}");
+                response.getWriter().print(json.toString());
             } else {
                 // If payment doesn't exist, fetch booking details for new payment
                 Booking target = bookingDAO.getBookingById(bookingId);
@@ -52,11 +74,24 @@ public class PaymentServlet extends HttpServlet {
 
         // Return all payments
         List<Payment> payments = paymentDAO.getAllPayments();
-        JSONArray array = new JSONArray();
-        for (Payment p : payments) {
-            array.put(new JSONObject(p));
+        StringBuilder json = new StringBuilder("[");
+        for (int i = 0; i < payments.size(); i++) {
+            Payment p = payments.get(i);
+            json.append("{")
+                    .append("\"paymentId\":").append(p.getPaymentId()).append(",")
+                    .append("\"bookingId\":").append(p.getBookingId()).append(",")
+                    .append("\"paymentMethod\":\"").append(p.getPaymentMethod()).append("\",")
+                    .append("\"amount\":").append(p.getAmount()).append(",")
+                    .append("\"paymentStatus\":\"").append(p.getPaymentStatus()).append("\",")
+                    .append("\"paymentDate\":\"").append(p.getPaymentDate()).append("\",")
+                    .append("\"guestName\":\"").append(p.getGuestName()).append("\",")
+                    .append("\"roomNumber\":\"").append(p.getRoomNumber()).append("\"")
+                    .append("}");
+            if (i < payments.size() - 1)
+                json.append(",");
         }
-        response.getWriter().print(array.toString());
+        json.append("]");
+        response.getWriter().print(json.toString());
     }
 
     @Override

@@ -66,24 +66,32 @@ public class PaymentDAO {
         return false;
     }
 
-    // ✅ Get All Payments
+    // ✅ Get All Payments (with guest and room details)
     public List<Payment> getAllPayments() {
 
         List<Payment> payments = new ArrayList<>();
-        String query = "SELECT * FROM payments ORDER BY payment_date DESC";
+        String query = "SELECT p.*, u.first_name, u.last_name, r.room_number " +
+                "FROM payments p " +
+                "JOIN bookings b ON p.booking_id = b.booking_id " +
+                "JOIN users u ON b.user_id = u.user_id " +
+                "JOIN rooms r ON b.room_id = r.room_id " +
+                "ORDER BY p.payment_date DESC";
 
         try (Connection conn = DBConnection.getInstance().getConnection();
                 Statement stmt = conn.createStatement();
                 ResultSet rs = stmt.executeQuery(query)) {
 
             while (rs.next()) {
-                payments.add(new Payment(
+                Payment p = new Payment(
                         rs.getInt("payment_id"),
                         rs.getInt("booking_id"),
                         rs.getString("payment_method"),
                         rs.getDouble("amount"),
                         rs.getString("payment_status"),
-                        rs.getTimestamp("payment_date")));
+                        rs.getTimestamp("payment_date"));
+                p.setGuestName(rs.getString("first_name") + " " + rs.getString("last_name"));
+                p.setRoomNumber(rs.getString("room_number"));
+                payments.add(p);
             }
 
         } catch (Exception e) {

@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.json.JSONObject;
+import org.json.JSONArray;
 
 @WebServlet(name = "UserServlet", urlPatterns = { "/admin/users" })
 public class UserServlet extends HttpServlet {
@@ -25,33 +26,56 @@ public class UserServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        List<User> users = userDAO.getAllUsers();
+        String query = request.getParameter("query");
+        String filter = request.getParameter("filter");
+        List<User> users;
 
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
+        try {
+            if (query != null && !query.trim().isEmpty()) {
+                users = userDAO.searchUsers(query.trim());
+            } else if ("reservations".equals(filter)) {
+                users = userDAO.getGuestsWithReservations();
+            } else {
+                users = userDAO.getAllUsers();
+            }
 
-        StringBuilder json = new StringBuilder("[");
-        for (int i = 0; i < users.size(); i++) {
-            User u = users.get(i);
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
 
-            json.append(String.format(
-                "{\"userId\": %d, \"firstName\": \"%s\", \"lastName\": \"%s\", \"email\": \"%s\", \"phone\": \"%s\", \"address\": \"%s\", \"nicPassport\": \"%s\"}",
-                u.getUserId(),
-                u.getFirstName(),
-                u.getLastName(),
-                u.getEmail(),
-                u.getPhone(),
-                u.getAddress(),
-                u.getNicPassport()
-            ));
+            StringBuilder json = new StringBuilder("[");
+            for (int i = 0; i < users.size(); i++) {
+                User u = users.get(i);
+                json.append("{")
+                        .append("\"userId\":").append(u.getUserId()).append(",")
+                        .append("\"firstName\":\"").append(escape(u.getFirstName())).append("\",")
+                        .append("\"lastName\":\"").append(escape(u.getLastName())).append("\",")
+                        .append("\"email\":\"").append(escape(u.getEmail())).append("\",")
+                        .append("\"phone\":\"").append(escape(u.getPhone())).append("\",")
+                        .append("\"address\":\"").append(escape(u.getAddress())).append("\",")
+                        .append("\"nicPassport\":\"").append(escape(u.getNicPassport())).append("\"")
+                        .append("}");
+                if (i < users.size() - 1) {
+                    json.append(",");
+                }
+            }
+            json.append("]");
 
-            if (i < users.size() - 1) {
-                json.append(",");
+            response.getWriter().print(json.toString());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setStatus(500);
+            try {
+                response.getWriter().print("{\"error\": \"" + e.getMessage() + "\"}");
+            } catch (Exception ignored) {
             }
         }
-        json.append("]");
+    }
 
-        response.getWriter().print(json.toString());
+    private String escape(String str) {
+        if (str == null)
+            return "";
+        return str.replace("\\", "\\\\").replace("\"", "\\\"").replace("\n", "\\n").replace("\r", "\\r");
     }
 
     @Override
@@ -68,6 +92,19 @@ public class UserServlet extends HttpServlet {
             return;
         }
 
+        String action = jsonInput.optString("action", "add");
+
+        if ("delete".equals(action)) {
+            int userId = jsonInput.getInt("userId");
+            if (userDAO.deleteUser(userId)) {
+                response.setStatus(HttpServletResponse.SC_OK);
+                response.getWriter().print("{\"message\": \"User deleted successfully\"}");
+            } else {
+                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            }
+            return;
+        }
+
         User user = new User();
         user.setFirstName(jsonInput.optString("firstName"));
         user.setLastName(jsonInput.optString("lastName"));
@@ -77,12 +114,24 @@ public class UserServlet extends HttpServlet {
         user.setAddress(jsonInput.optString("address"));
         user.setNicPassport(jsonInput.optString("nicPassport"));
 
-        if (userDAO.addUser(user)) {
-            response.setStatus(HttpServletResponse.SC_OK);
-            response.setContentType("application/json");
-            response.getWriter().print("{\"userId\": " + user.getUserId() + "}");
+        if ("update".equals(action)) {
+            user.setUserId(jsonInput.getInt("userId"));
+            if (userDAO.updateUser(user)) {
+                response.setStatus(HttpServletResponse.SC_OK);
+                response.setContentType("application/json");
+                response.getWriter().print("{\"message\": \"User updated successfully\"}");
+            } else {
+                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            }
         } else {
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            // Default: add
+            if (userDAO.addUser(user)) {
+                response.setStatus(HttpServletResponse.SC_OK);
+                response.setContentType("application/json");
+                response.getWriter().print("{\"userId\": " + user.getUserId() + "}");
+            } else {
+                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            }
         }
     }
 }
